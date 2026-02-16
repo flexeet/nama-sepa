@@ -1,0 +1,80 @@
+<!-- SECTION 08: ROI -->
+<style>
+.roi-section{padding:100px 24px;background:var(--bg-dark);color:white}
+.roi-section .section-title{color:white}
+.roi-section .section-subtitle{color:rgba(255,255,255,.6)}
+.roi-tag{display:inline-block;padding:6px 16px;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;background:rgba(45,122,111,.2);color:#5CC8B8}
+.roi-monthly{max-width:480px;margin:0 auto 48px;text-align:center;background:linear-gradient(135deg,rgba(45,122,111,.2),rgba(45,122,111,.05));border:2px solid rgba(45,122,111,.4);border-radius:20px;padding:28px 40px}
+.roi-monthly-val{font-family:'Fraunces',serif;font-size:3rem;font-weight:800;line-height:1}
+.roi-monthly-val span{font-size:1.2rem;color:rgba(255,255,255,.5)}
+.roi-compare{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.roi-box{border-radius:16px;padding:28px}
+.roi-box.old{background:rgba(212,101,74,.08);border:1px solid rgba(212,101,74,.2)}
+.roi-box.new{background:rgba(45,122,111,.08);border:1px solid rgba(45,122,111,.3)}
+.roi-box-label{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+.roi-box.old .roi-box-label{color:#D4654A}
+.roi-box.new .roi-box-label{color:#5CC8B8}
+.roi-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.9rem}
+.roi-row:last-child{border-bottom:none}
+.roi-row .l{color:rgba(255,255,255,.7)}.roi-row .v{font-weight:700}
+.roi-box.old .v{color:#D4654A}.roi-box.new .v{color:#5CC8B8}
+.roi-total{margin-top:14px;padding:14px;border-radius:10px;display:flex;justify-content:space-between;font-weight:700}
+.roi-box.old .roi-total{background:rgba(212,101,74,.15)}
+.roi-box.new .roi-total{background:rgba(45,122,111,.15)}
+.roi-save{max-width:1140px;margin:32px auto 0;background:linear-gradient(135deg,rgba(200,164,92,.15),rgba(200,164,92,.05));border:1px solid rgba(200,164,92,.3);border-radius:16px;padding:24px;text-align:center;font-size:1.1rem;color:#C8A45C}
+.roi-save strong{color:white}
+.roi-final{max-width:1140px;margin:40px auto 0;background:linear-gradient(135deg,#1E5C54,#2D7A6F);border-radius:16px;padding:32px;text-align:center}
+.roi-final-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:16px}
+.roi-fi{text-align:center}.roi-fi .n{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700}.roi-fi .s{font-size:.72rem;opacity:.6}
+.roi-fo{font-size:1.3rem;opacity:.4}
+.roi-fr{background:white;color:#1E5C54;padding:14px 24px;border-radius:12px}.roi-fr .n{font-size:2rem}
+@media(max-width:768px){.roi-compare{grid-template-columns:1fr}.roi-final-row{flex-direction:column}}
+</style>
+
+<section class="roi-section" id="roi">
+<div class="container center">
+    <span class="roi-tag reveal">Hitung-hitungan</span>
+    <h2 class="section-title reveal reveal-delay-1">Bukan Pengeluaran,<br>Ini Investasi</h2>
+    <p class="section-subtitle center reveal reveal-delay-2">Bandingkan biaya lama vs biaya setelah pakai sistem.</p>
+</div>
+
+<div class="roi-monthly reveal reveal-delay-2">
+    <div style="font-size:.85rem;color:#5CC8B8;margin-bottom:8px">Biaya Operasional Bulanan Setelah Go-Live</div>
+    <div class="roi-monthly-val">~Rp 6<span>jt/bulan</span></div>
+    <div style="font-size:.88rem;color:#5CC8B8;margin-top:8px">Server + AI + Maintenance (semua termasuk)</div>
+</div>
+
+<div class="roi-compare container reveal reveal-delay-3">
+    <div class="roi-box old">
+        <div class="roi-box-label">❌ Cara Lama (Excel + 2 Admin)</div>
+        <div class="roi-row"><span class="l">2 Admin booking + WA</span><span class="v">Rp 10jt</span></div>
+        <div class="roi-row"><span class="l">Owner urus masalah operasional</span><span class="v">Rp 5jt</span></div>
+        <div class="roi-row"><span class="l">Kerugian salah harga & double booking</span><span class="v">Rp 8jt</span></div>
+        <div class="roi-total"><span>Total/bulan</span><span>Rp 23jt</span></div>
+    </div>
+    <div class="roi-box new">
+        <div class="roi-box-label">✅ Dengan Sistem Baru</div>
+        <div class="roi-row"><span class="l">1 Admin supervise saja</span><span class="v">Rp 5jt</span></div>
+        <div class="roi-row"><span class="l">Server + AI Token</span><span class="v">Rp 2jt</span></div>
+        <div class="roi-row"><span class="l">Maintenance & Support</span><span class="v">Rp 3.8jt</span></div>
+        <div class="roi-row"><span class="l">Kerugian error & double booking</span><span class="v">Rp 0</span></div>
+        <div class="roi-total"><span>Total/bulan</span><span>Rp 11jt</span></div>
+    </div>
+</div>
+
+<div class="roi-save container reveal reveal-delay-4">
+    💡 <strong>Hemat Rp 12jt/bulan</strong> = <strong>Rp 144jt/tahun</strong>
+</div>
+
+<div class="roi-final container reveal reveal-delay-5">
+    <div style="font-size:.85rem;opacity:.7">ROI TAHUN PERTAMA</div>
+    <div class="roi-final-row">
+        <div class="roi-fi"><div class="n">Rp 144jt</div><div class="s">Penghematan/tahun</div></div>
+        <div class="roi-fo">+</div>
+        <div class="roi-fi"><div class="n">Rp 150jt</div><div class="s">Revenue recovery</div></div>
+        <div class="roi-fo">=</div>
+        <div class="roi-fr"><div class="n">6x ROI</div><div class="s">Return on Investment</div></div>
+    </div>
+    <div style="margin-top:20px;font-size:.9rem;opacity:.85">Investasi Rp 50jt → Dampak Rp 294jt di tahun pertama</div>
+</div>
+</section>

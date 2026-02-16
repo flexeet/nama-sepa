@@ -1,0 +1,83 @@
+<!-- SECTION 10: GARANSI -->
+<style>
+.garansi-section{padding:100px 24px;background:var(--bg)}
+.garansi-grid{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.garansi-card{border-radius:16px;padding:32px;border:1px solid var(--border-light)}
+.garansi-card.included{background:var(--surface)}
+.garansi-card.not-included{background:var(--bg)}
+.garansi-card-label{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+.garansi-card.included .garansi-card-label{color:var(--accent)}
+.garansi-card.not-included .garansi-card-label{color:var(--text-muted)}
+.garansi-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.9rem;color:var(--text-secondary)}
+.garansi-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.garansi-icon svg{width:12px;height:12px}
+.garansi-icon.yes{background:var(--accent-light)}.garansi-icon.yes svg{stroke:var(--accent)}
+.garansi-icon.no{background:#FEE2E2}.garansi-icon.no svg{stroke:#EF4444}
+.garansi-highlight{max-width:1140px;margin:40px auto 0;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:16px;padding:32px 40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.garansi-highlight-icon{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.garansi-highlight-icon svg{width:28px;height:28px;stroke:white}
+.garansi-highlight-text{color:white;flex:1}
+.garansi-highlight-text h3{color:white;font-size:1.2rem;margin-bottom:6px}
+.garansi-highlight-text p{font-size:.92rem;opacity:.85;line-height:1.55}
+.support-model{max-width:1140px;margin:40px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.support-card{background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border-light);text-align:center}
+.support-card h4{font-size:1rem;margin-bottom:6px}
+.support-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.55}
+.support-tag{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.72rem;font-weight:700;margin-bottom:12px}
+.support-tag.free{background:var(--accent-light);color:var(--accent)}
+.support-tag.opt{background:var(--gold-light);color:var(--gold)}
+@media(max-width:768px){.garansi-grid,.support-model{grid-template-columns:1fr}.garansi-highlight{flex-direction:column;text-align:center}}
+</style>
+<section class="garansi-section" id="garansi">
+<div class="container center">
+    <span class="section-tag accent reveal">Transparan & Jelas</span>
+    <h2 class="section-title reveal reveal-delay-1">Apa yang Termasuk<br>& Tidak Termasuk</h2>
+    <p class="section-subtitle center reveal reveal-delay-2">Tidak ada biaya tersembunyi. Semua ditulis terang-terangan.</p>
+</div>
+<div class="garansi-grid container">
+    <div class="garansi-card included reveal reveal-delay-1">
+        <div class="garansi-card-label">Termasuk dalam paket</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Desain & arsitektur seluruh sistem</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Database lengkap (kamar, harga, booking, tamu)</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>AI chatbot WhatsApp + pelatihan</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Semua otomasi (invoice, pengingat, e-ticket)</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Dashboard admin (HP & komputer)</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>2 sesi pelatihan + video + dokumentasi</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>3 bulan support gratis (perbaikan bug)</div>
+        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Update progress mingguan selama pengerjaan</div>
+    </div>
+    <div class="garansi-card not-included reveal reveal-delay-2">
+        <div class="garansi-card-label">Tidak termasuk (transparan)</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Migrasi data lama (bisa tambahan)</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Laporan custom di luar dashboard standar</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Support 24 jam (jam kerja saja)</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Biaya server & AI token bulanan (~Rp 2jt)</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Integrasi sistem luar scope</div>
+        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Fitur tambahan (bisa nego terpisah)</div>
+    </div>
+</div>
+<div class="garansi-highlight container reveal reveal-delay-3">
+    <div class="garansi-highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="garansi-highlight-text">
+        <h3>Garansi Uang Kembali</h3>
+        <p>Jika sistem tidak sesuai scope yang disepakati di awal kontrak, kami kembalikan uang Anda. Kami berani karena kami yakin dengan kualitas pekerjaan kami.</p>
+    </div>
+</div>
+<div class="support-model container">
+    <div class="support-card reveal reveal-delay-1">
+        <span class="support-tag free">GRATIS</span>
+        <h4>Bulan 1–3 Setelah Go-Live</h4>
+        <p>Support harian (bulan 1), mingguan (bulan 2-3). Perbaikan bug gratis.</p>
+    </div>
+    <div class="support-card reveal reveal-delay-2">
+        <span class="support-tag opt">OPSIONAL</span>
+        <h4>Maintenance Bulanan</h4>
+        <p>Rp 3.8jt/bulan. Review performa, update AI, monitoring server.</p>
+    </div>
+    <div class="support-card reveal reveal-delay-3">
+        <span class="support-tag opt">OPSIONAL</span>
+        <h4>Fitur Tambahan</h4>
+        <p>Loyalty program, integrasi OTA? Bisa dinegosiasi terpisah.</p>
+    </div>
+</div>
+</section>

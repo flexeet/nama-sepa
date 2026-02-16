@@ -1,0 +1,271 @@
+<!-- ============================================
+     SECTION 07: INVESTASI (Pricing)
+     ============================================ -->
+<style>
+    .investasi-section {
+        padding: 100px 24px;
+        background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    }
+    .investasi-card {
+        max-width: 860px; margin: 0 auto;
+        background: var(--surface); border-radius: 24px;
+        border: 3px solid var(--accent); overflow: hidden;
+        box-shadow: var(--shadow-xl); position: relative;
+    }
+    .investasi-ribbon {
+        position: absolute; top: 24px; right: -40px;
+        background: linear-gradient(135deg, var(--coral), #C0503A);
+        color: white; padding: 8px 56px; transform: rotate(45deg);
+        font-weight: 700; font-size: 0.82rem;
+        box-shadow: 0 4px 12px rgba(212,101,74,0.4);
+    }
+    .investasi-header {
+        padding: 40px 40px 0; text-align: center;
+    }
+    .investasi-header .section-tag { margin-bottom: 16px; }
+    .investasi-header h3 {
+        font-size: 1.6rem; margin-bottom: 8px;
+    }
+
+    .investasi-price-block {
+        text-align: center; padding: 24px 40px 32px;
+    }
+    .investasi-old-price {
+        font-size: 1.2rem; color: var(--text-muted);
+        text-decoration: line-through; margin-bottom: 8px;
+    }
+    .investasi-old-price .save-badge {
+        text-decoration: none; display: inline-block;
+        background: var(--coral-light); color: var(--coral);
+        padding: 4px 12px; border-radius: 12px; font-size: 0.78rem;
+        font-weight: 600; margin-left: 8px;
+    }
+    .investasi-main-price {
+        font-family: 'Fraunces', serif; font-size: 3.6rem;
+        font-weight: 800; color: var(--accent-dark); line-height: 1;
+    }
+    .investasi-main-price span { font-size: 1.8rem; }
+    .investasi-price-note {
+        font-size: 0.92rem; color: var(--text-muted); margin-top: 10px;
+    }
+
+    /* Why 3 months */
+    .investasi-why {
+        margin: 0 40px 32px; padding: 24px;
+        background: linear-gradient(135deg, rgba(45,122,111,0.06), rgba(45,122,111,0.02));
+        border-radius: var(--radius-sm); border-left: 4px solid var(--accent);
+    }
+    .investasi-why h4 {
+        font-size: 1.05rem; margin-bottom: 8px;
+    }
+    .investasi-why p {
+        font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65;
+    }
+
+    /* Payment options */
+    .investasi-options {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        padding: 0 40px 32px;
+    }
+    .option-card {
+        border: 2px solid var(--border); border-radius: var(--radius);
+        padding: 24px; text-align: center; transition: all 0.3s;
+    }
+    .option-card.recommended {
+        border-color: var(--accent); position: relative;
+        background: linear-gradient(135deg, rgba(45,122,111,0.06), rgba(45,122,111,0.02));
+    }
+    .option-card.recommended .option-badge {
+        position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+        background: var(--accent); color: white; padding: 4px 16px;
+        border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+    }
+    .option-label {
+        font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
+        text-transform: uppercase; color: var(--text-muted);
+        padding: 4px 12px; border-radius: 12px; background: var(--bg-alt);
+        display: inline-block; margin-bottom: 14px;
+    }
+    .option-card.recommended .option-label {
+        background: rgba(45,122,111,0.15); color: var(--accent);
+    }
+    .option-price {
+        font-family: 'Fraunces', serif; font-size: 1.8rem;
+        font-weight: 700; margin-bottom: 6px;
+    }
+    .option-card.recommended .option-price { color: var(--accent-dark); }
+    .option-price span { font-size: 0.9rem; color: var(--text-muted); }
+    .option-desc { font-size: 0.85rem; color: var(--text-secondary); }
+    .option-phases {
+        margin-top: 14px; padding-top: 14px;
+        border-top: 1px dashed rgba(45,122,111,0.3);
+        text-align: left;
+    }
+    .option-phase-item {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 0.82rem; color: var(--accent-dark); margin-bottom: 6px;
+    }
+    .option-phase-item svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+
+    /* Value list */
+    .investasi-values {
+        margin: 0 40px 32px; padding: 20px;
+        background: var(--bg); border-radius: var(--radius-sm);
+    }
+    .investasi-values-label {
+        font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
+        text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .investasi-values-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .value-item {
+        display: flex; align-items: center; gap: 8px; font-size: 0.88rem;
+    }
+    .value-item svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+
+    .investasi-values-total {
+        margin-top: 16px; padding-top: 16px;
+        border-top: 1px solid var(--border-light);
+        text-align: right;
+    }
+    .investasi-values-total .strike { text-decoration: line-through; color: var(--text-muted); }
+    .investasi-values-total .actual { color: var(--accent-dark); font-weight: 700; font-size: 1.05rem; margin-left: 8px; }
+
+    /* CTA */
+    .investasi-cta {
+        padding: 0 40px 40px; text-align: center;
+    }
+    .investasi-guarantee {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);
+    }
+    .investasi-guarantee svg { width: 16px; height: 16px; color: var(--accent); }
+
+    @media (max-width: 768px) {
+        .investasi-options { grid-template-columns: 1fr; }
+        .investasi-values-grid { grid-template-columns: 1fr; }
+        .investasi-card { margin: 0 -8px; }
+        .investasi-header, .investasi-price-block, .investasi-cta,
+        .investasi-why, .investasi-options, .investasi-values { 
+            padding-left: 24px; padding-right: 24px; margin-left: 0; margin-right: 0;
+        }
+    }
+</style>
+
+<section class="investasi-section" id="investasi">
+    <div class="container center">
+        <span class="section-tag gold reveal">Investasi</span>
+        <h2 class="section-title reveal reveal-delay-1">Berapa Biayanya?</h2>
+        <p class="section-subtitle center reveal reveal-delay-2">
+            Transparan, tidak ada biaya tersembunyi. Satu harga untuk semua modul.
+        </p>
+    </div>
+
+    <div class="investasi-card reveal reveal-delay-2">
+        <div class="investasi-ribbon">HEMAT 67%</div>
+
+        <div class="investasi-header">
+            <span class="section-tag accent">Penawaran Khusus</span>
+            <h3>Paket Lengkap — 6 Modul</h3>
+        </div>
+
+        <div class="investasi-price-block">
+            <div class="investasi-old-price">
+                Rp 150.000.000
+                <span class="save-badge">-Rp 100jt</span>
+            </div>
+            <div class="investasi-main-price">
+                Rp 50<span>juta</span>
+            </div>
+            <div class="investasi-price-note">
+                Sekali bayar · Pengerjaan 3 bulan · Semua modul termasuk
+            </div>
+        </div>
+
+        <!-- Why 3 months -->
+        <div class="investasi-why">
+            <h4>Kenapa butuh 3 bulan?</h4>
+            <p>
+                Sistem reservasi pulau itu rumit — ada kamar, paket, harga yang berubah-ubah, jadwal kapal, manifest penumpang, dan pembayaran yang semuanya saling terhubung. 
+                <strong>Bulan pertama kami fokus menyusun fondasi data yang benar</strong>, supaya AI dan otomasi bisa berjalan akurat. Ini yang bikin sistem tahan lama.
+            </p>
+        </div>
+
+        <!-- Payment options -->
+        <div class="investasi-options">
+            <div class="option-card">
+                <div class="option-label">Bayar Lunas</div>
+                <div class="option-price">Rp 50<span>juta</span></div>
+                <div class="option-desc">Satu kali bayar di awal</div>
+            </div>
+            <div class="option-card recommended">
+                <div class="option-badge">DIREKOMENDASIKAN</div>
+                <div class="option-label">Cicilan 3×</div>
+                <div class="option-price">Rp 17<span>juta/bulan</span></div>
+                <div class="option-desc">Bayar sesuai tahap pengerjaan</div>
+                <div class="option-phases">
+                    <div class="option-phase-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                        Bulan 1 → Riset & Bangun Database
+                    </div>
+                    <div class="option-phase-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                        Bulan 2 → AI & Otomasi
+                    </div>
+                    <div class="option-phase-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                        Bulan 3 → Uji Coba & Go-Live
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Value breakdown -->
+        <div class="investasi-values">
+            <div class="investasi-values-label">Nilai yang Anda Dapat:</div>
+            <div class="investasi-values-grid">
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    AI Chatbot WhatsApp (~Rp 12jt)
+                </div>
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    Database & Harga (~Rp 10jt)
+                </div>
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    Otomasi Proses (~Rp 10jt)
+                </div>
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    Verifikasi Bayar (~Rp 6jt)
+                </div>
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    Dashboard Admin (~Rp 8jt)
+                </div>
+                <div class="value-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                    Pelatihan & Support (~Rp 4jt)
+                </div>
+            </div>
+            <div class="investasi-values-total">
+                <span class="strike">Total: Rp 150jt</span>
+                <span class="actual">→ Anda bayar: Rp 50jt</span>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="investasi-cta">
+            <button class="btn-primary" onclick="document.getElementById('cta-section').scrollIntoView({behavior:'smooth'})" style="padding:18px 40px; font-size:1.05rem;">
+                Mulai Diskusi Project
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <div class="investasi-guarantee">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Garansi: Uang kembali jika tidak sesuai scope yang disepakati
+            </div>
+        </div>
+    </div>
+</section>

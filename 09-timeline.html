@@ -1,0 +1,110 @@
+<!-- SECTION 09: TIMELINE -->
+<style>
+.timeline-section{padding:100px 24px;background:var(--surface)}
+.tl-track{max-width:900px;margin:0 auto;position:relative}
+.tl-track::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:3px;background:var(--border-light);border-radius:2px}
+.tl-phase{position:relative;padding-left:72px;margin-bottom:48px}
+.tl-phase:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:16px;top:4px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:white;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:2}
+.tl-dot.p1{background:var(--accent)}.tl-dot.p2{background:var(--gold)}.tl-dot.p3{background:var(--coral)}.tl-dot.p4{background:var(--navy)}
+.tl-phase-label{font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.tl-phase-label.c1{color:var(--accent)}.tl-phase-label.c2{color:var(--gold)}.tl-phase-label.c3{color:var(--coral)}.tl-phase-label.c4{color:var(--navy)}
+.tl-phase h3{font-size:1.3rem;margin-bottom:8px}
+.tl-phase>p{font-size:.92rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6}
+.tl-tasks{display:flex;flex-direction:column;gap:8px}
+.tl-task{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--bg);border-radius:10px;font-size:.88rem;color:var(--text-secondary)}
+.tl-task-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tl-task-icon svg{width:12px;height:12px}
+.tl-task-icon.c1{background:var(--accent-light)}.tl-task-icon.c1 svg{stroke:var(--accent)}
+.tl-task-icon.c2{background:var(--gold-light)}.tl-task-icon.c2 svg{stroke:var(--gold)}
+.tl-task-icon.c3{background:var(--coral-light)}.tl-task-icon.c3 svg{stroke:var(--coral)}
+.tl-task-icon.c4{background:var(--navy-light)}.tl-task-icon.c4 svg{stroke:var(--navy)}
+.tl-week-badge{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.72rem;font-weight:700;margin-bottom:10px}
+.tl-week-badge.c1{background:var(--accent-light);color:var(--accent)}
+.tl-week-badge.c2{background:var(--gold-light);color:var(--gold)}
+.tl-week-badge.c3{background:var(--coral-light);color:var(--coral)}
+.tl-week-badge.c4{background:var(--navy-light);color:var(--navy)}
+.tl-payment{margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:.78rem;font-weight:600}
+.tl-payment.c1{background:rgba(45,122,111,.1);color:var(--accent)}
+.tl-payment.c2{background:rgba(200,164,92,.1);color:var(--gold)}
+.tl-payment.c3{background:rgba(212,101,74,.1);color:var(--coral)}
+.tl-payment svg{width:14px;height:14px}
+@media(max-width:768px){.tl-phase{padding-left:56px}.tl-track::before{left:20px}.tl-dot{left:8px}}
+</style>
+
+<section class="timeline-section" id="timeline">
+<div class="container center">
+    <span class="section-tag navy reveal">Jadwal Pengerjaan</span>
+    <h2 class="section-title reveal reveal-delay-1">90 Hari Menuju<br>Reservasi Otomatis</h2>
+    <p class="section-subtitle center reveal reveal-delay-2">Setiap bulan punya tujuan jelas. Anda bisa pantau progress lewat update mingguan.</p>
+</div>
+
+<div class="tl-track container">
+    <div class="tl-phase reveal reveal-delay-1">
+        <div class="tl-dot p1">1</div>
+        <span class="tl-week-badge c1">Minggu 1–4</span>
+        <div class="tl-phase-label c1">Bulan Pertama</div>
+        <h3>Riset & Bangun Pondasi Data</h3>
+        <p>Kami pelajari cara kerja reservasi Sepa Island sekarang, lalu bangun database yang jadi jantung seluruh sistem.</p>
+        <div class="tl-tasks">
+            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Wawancara tim: pelajari proses booking saat ini</div>
+            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Input semua data kamar, harga, aturan ke database</div>
+            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Buat logika hitung harga otomatis (weekday, weekend, high season)</div>
+            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Desain alur proses booking dari awal sampai akhir</div>
+        </div>
+        <div class="tl-payment c1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Pembayaran 1: Rp 17jt (cicilan) atau Rp 50jt (lunas)
+        </div>
+    </div>
+
+    <div class="tl-phase reveal reveal-delay-2">
+        <div class="tl-dot p2">2</div>
+        <span class="tl-week-badge c2">Minggu 5–8</span>
+        <div class="tl-phase-label c2">Bulan Kedua</div>
+        <h3>Bangun AI & Otomasi</h3>
+        <p>Setelah pondasi siap, kami "ajarkan" AI semua pengetahuan tentang Sepa Island dan hubungkan otomasi.</p>
+        <div class="tl-tasks">
+            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Latih AI chatbot: harga, kebijakan, FAQ</div>
+            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Hubungkan chatbot ke WhatsApp Business</div>
+            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Buat otomasi: invoice, pengingat bayar, e-ticket</div>
+            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Bangun dashboard admin</div>
+        </div>
+        <div class="tl-payment c2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Pembayaran 2: Rp 17jt
+        </div>
+    </div>
+
+    <div class="tl-phase reveal reveal-delay-3">
+        <div class="tl-dot p3">3</div>
+        <span class="tl-week-badge c3">Minggu 9–10</span>
+        <div class="tl-phase-label c3">Bulan Ketiga (Awal)</div>
+        <h3>Uji Coba & Perbaikan</h3>
+        <p>Sistem dijalankan paralel dengan proses lama. Kami perbaiki semua yang kurang selama 2 minggu.</p>
+        <div class="tl-tasks">
+            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Test semua skenario booking (normal, reschedule, cancel)</div>
+            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Test verifikasi pembayaran</div>
+            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Perbaiki AI response yang belum sempurna</div>
+        </div>
+    </div>
+
+    <div class="tl-phase reveal reveal-delay-4">
+        <div class="tl-dot p4">4</div>
+        <span class="tl-week-badge c4">Minggu 11–12</span>
+        <div class="tl-phase-label c4">Bulan Ketiga (Akhir)</div>
+        <h3>Go-Live & Pelatihan</h3>
+        <p>Sistem resmi jalan! Tim Anda dilatih, dokumentasi diserahkan, dan kami dampingi di bulan pertama.</p>
+        <div class="tl-tasks">
+            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Pelatihan tim (2 sesi)</div>
+            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Serahkan dokumentasi & video tutorial</div>
+            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Sistem live 100% — terima booking nyata</div>
+            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Mulai support 3 bulan gratis</div>
+        </div>
+        <div class="tl-payment c3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Pembayaran 3: Rp 16jt
+        </div>
+    </div>
+</div>
+</section>
