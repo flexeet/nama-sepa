@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAMA Marine × Flexeet | Proposal Smart Reservation System</title>
+    <title>NAMA Marine &times; Flexeet | Proposal Smart Reservation System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&display=swap" rel="stylesheet">
@@ -20,9 +20,11 @@
         @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
         @keyframes barFill{to{width:85%}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
         .reveal{opacity:0;transform:translateY(36px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
         .reveal.visible{opacity:1;transform:translateY(0)}
-        .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}
+        .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}.reveal-delay-6{transition-delay:.6s}
         .card-hover{transition:transform .3s ease,box-shadow .3s ease}
         .card-hover:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
         .center{text-align:center}
@@ -36,2040 +38,409 @@
         .section-subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:560px;margin-bottom:56px;line-height:1.7}
         .section-subtitle.center{margin-left:auto;margin-right:auto}
         @media(max-width:768px){:root{--container:100%}html{font-size:15px}}
+
+        /* ============================================
+           PASSWORD SCREEN
+           ============================================ */
+        #lock-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #1A1D23 0%, #0F1117 50%, #1A1D23 100%);
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #lock-screen.unlocked {
+            opacity: 0; visibility: hidden; pointer-events: none;
+        }
+        .lock-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 420px; width: 90%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+        }
+        .lock-logo {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 32px rgba(45,122,111,0.3);
+        }
+        .lock-logo svg { width: 32px; height: 32px; stroke: white; }
+        .lock-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem; font-weight: 700;
+            color: white; margin-bottom: 8px;
+        }
+        .lock-subtitle {
+            font-size: 0.88rem; color: rgba(255,255,255,0.45);
+            margin-bottom: 32px;
+        }
+        .lock-input-wrap {
+            position: relative; margin-bottom: 16px;
+        }
+        .lock-input {
+            width: 100%; padding: 16px 52px 16px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            color: white; font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .lock-input::placeholder { color: rgba(255,255,255,0.25); }
+        .lock-input:focus { border-color: var(--accent); }
+        .lock-input.error {
+            border-color: var(--coral);
+            animation: shake 0.4s ease;
+        }
+        .lock-toggle-pw {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 4px;
+        }
+        .lock-toggle-pw svg { width: 20px; height: 20px; stroke: rgba(255,255,255,0.3); }
+        .lock-toggle-pw:hover svg { stroke: rgba(255,255,255,0.6); }
+        .lock-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white; border: none; border-radius: 14px;
+            font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+            box-shadow: 0 8px 24px rgba(45,122,111,0.3);
+        }
+        .lock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(45,122,111,0.4);
+        }
+        .lock-btn:disabled {
+            opacity: 0.5; cursor: not-allowed; transform: none;
+        }
+        .lock-error-msg {
+            color: var(--coral); font-size: 0.82rem;
+            margin-top: 12px; min-height: 20px;
+            transition: opacity 0.3s;
+        }
+        .lock-footer {
+            margin-top: 32px; padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .lock-footer p {
+            font-size: 0.75rem; color: rgba(255,255,255,0.25);
+            line-height: 1.6;
+        }
+        .lock-footer span { color: var(--accent); font-weight: 600; }
+
+        /* Loading spinner */
+        .lock-spinner {
+            display: none; width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Main content hidden until unlocked */
+        #main-content {
+            display: none;
+        }
+        #main-content.visible {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
     </style>
 </head>
 <body>
 
-<!-- ======= 01-header.html ======= -->
 <!-- ============================================
-     SECTION 01: HEADER / NAVIGATION
+     PASSWORD SCREEN (AES-256-GCM Encrypted)
+     Password tidak tersimpan di source code.
      ============================================ -->
-<style>
-    .site-header {
-        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-        padding: 16px 0;
-        transition: all 0.4s ease;
-    }
-    .site-header.scrolled { padding: 8px 0; }
-    .site-header .header-inner {
-        max-width: 1140px; margin: 0 auto; padding: 0 24px;
-    }
-    .site-header .header-bar {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 28px; border-radius: 100px;
-        background: rgba(255,255,255,0.55);
-        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.4);
-        transition: all 0.3s ease;
-    }
-    .site-header.scrolled .header-bar {
-        background: rgba(255,255,255,0.92);
-        border-color: var(--border);
-        box-shadow: var(--shadow-md);
-    }
-    .header-logo {
-        display: flex; align-items: center; gap: 10px; cursor: pointer;
-    }
-    .header-logo-icon {
-        width: 36px; height: 36px; border-radius: 10px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-        display: flex; align-items: center; justify-content: center;
-        color: white; font-weight: 800; font-size: 1rem;
-    }
-    .header-logo-text {
-        font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.1rem;
-    }
-    .header-logo-text span { color: var(--accent); }
-    .header-nav {
-        display: flex; gap: 4px; align-items: center;
-    }
-    .header-nav a {
-        padding: 8px 16px; border-radius: 8px; font-size: 0.88rem;
-        font-weight: 500; color: var(--text-secondary);
-        transition: all 0.2s; border: none; background: none; cursor: pointer;
-    }
-    .header-nav a:hover {
-        background: var(--bg-alt); color: var(--text);
-    }
-    .header-cta-btn {
-        background: var(--accent); color: white; border: none;
-        padding: 10px 24px; border-radius: 50px; font-weight: 600;
-        font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
-        font-family: 'DM Sans', sans-serif;
-    }
-    .header-cta-btn:hover { background: var(--accent-dark); }
-    .mobile-toggle {
-        display: none; background: none; border: none; cursor: pointer;
-        width: 40px; height: 40px; border-radius: 8px;
-        align-items: center; justify-content: center;
-        color: var(--text);
-    }
-    .mobile-toggle svg { width: 24px; height: 24px; }
-    .mobile-menu {
-        display: none; flex-direction: column; padding: 16px;
-        background: rgba(255,255,255,0.95); backdrop-filter: blur(16px);
-        border: 1px solid var(--border); border-radius: 16px;
-        position: absolute; top: calc(100% + 8px); left: 24px; right: 24px;
-        box-shadow: var(--shadow-lg);
-    }
-    .mobile-menu a {
-        padding: 12px 16px; border-radius: 8px; font-size: 0.92rem;
-        font-weight: 500; color: var(--text-secondary);
-        display: block; transition: all 0.2s;
-    }
-    .mobile-menu a:hover { background: var(--bg-alt); color: var(--text); }
-
-    @media (max-width: 900px) {
-        .header-nav { display: none; }
-        .header-cta-btn { display: none; }
-        .mobile-toggle { display: flex; }
-    }
-</style>
-
-<header class="site-header" id="main-header">
-    <div class="header-inner">
-        <div class="header-bar">
-            <a href="#hero" class="header-logo">
-                <div class="header-logo-icon">N</div>
-                <div class="header-logo-text">NAMA <span>Marine</span></div>
-            </a>
-
-            <nav class="header-nav">
-                <a href="#masalah">Masalah</a>
-                <a href="#solusi">Solusi</a>
-                <a href="#modul">Modul</a>
-                <a href="#cara-kerja">Cara Kerja</a>
-                <a href="#investasi">Investasi</a>
-                <a href="#timeline">Timeline</a>
-            </nav>
-
-            <button class="header-cta-btn" onclick="document.getElementById('investasi').scrollIntoView({behavior:'smooth'})">
-                Lihat Harga
-            </button>
-
-            <button class="mobile-toggle" id="mobile-toggle">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-                </svg>
-            </button>
+<div id="lock-screen">
+    <div class="lock-card">
+        <div class="lock-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
         </div>
-
-        <nav class="mobile-menu" id="mobile-menu">
-            <a href="#masalah">Masalah</a>
-            <a href="#solusi">Solusi</a>
-            <a href="#modul">Modul</a>
-            <a href="#cara-kerja">Cara Kerja</a>
-            <a href="#investasi">Investasi</a>
-            <a href="#timeline">Timeline</a>
-        </nav>
-    </div>
-</header>
-
-<!-- ======= 02-hero.html ======= -->
-<!-- ============================================
-     SECTION 02: HERO
-     ============================================ -->
-<style>
-    .hero-section {
-        min-height: 100vh; display: flex; align-items: center;
-        position: relative; overflow: hidden;
-        padding: 140px 24px 80px;
-    }
-    .hero-bg-circle-1 {
-        position: absolute; top: -100px; right: -200px;
-        width: 600px; height: 600px;
-        background: radial-gradient(circle, rgba(45,122,111,0.08) 0%, transparent 70%);
-        border-radius: 50%; pointer-events: none;
-    }
-    .hero-bg-circle-2 {
-        position: absolute; bottom: -150px; left: -150px;
-        width: 500px; height: 500px;
-        background: radial-gradient(circle, rgba(200,164,92,0.06) 0%, transparent 70%);
-        border-radius: 50%; pointer-events: none;
-        animation: float 8s ease-in-out infinite;
-    }
-    .hero-grid-bg {
-        position: absolute; inset: 0; opacity: 0.03; pointer-events: none;
-        background-image: linear-gradient(var(--text) 1px, transparent 1px),
-                          linear-gradient(90deg, var(--text) 1px, transparent 1px);
-        background-size: 60px 60px;
-    }
-    .hero-content {
-        max-width: 1140px; margin: 0 auto; width: 100%;
-        position: relative; z-index: 2;
-        display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center;
-    }
-    .hero-badge {
-        display: inline-flex; align-items: center; gap: 8px;
-        background: var(--surface); padding: 8px 20px; border-radius: 50px;
-        border: 1px solid var(--border); margin-bottom: 28px;
-        box-shadow: var(--shadow-sm);
-    }
-    .hero-badge-dot {
-        width: 8px; height: 8px; border-radius: 50%;
-        background: var(--accent); animation: pulse 2s infinite;
-    }
-    .hero-badge-text {
-        font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px;
-        color: var(--text-secondary); text-transform: uppercase;
-    }
-    .hero-title {
-        font-size: clamp(2.2rem, 4.5vw, 3.6rem);
-        font-weight: 800; letter-spacing: -1.5px; margin-bottom: 20px;
-        line-height: 1.1;
-    }
-    .hero-title-accent {
-        background: linear-gradient(135deg, var(--accent), var(--gold));
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .hero-desc {
-        font-size: 1.1rem; color: var(--text-secondary);
-        margin-bottom: 36px; line-height: 1.7; max-width: 520px;
-    }
-    .hero-desc strong { color: var(--text); }
-    .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-    .btn-primary {
-        background: var(--accent); color: white; border: none;
-        padding: 16px 32px; border-radius: 50px; font-weight: 700;
-        font-size: 1rem; cursor: pointer; transition: all 0.3s;
-        display: inline-flex; align-items: center; gap: 10px;
-        font-family: 'DM Sans', sans-serif;
-        box-shadow: 0 8px 24px rgba(45,122,111,0.25);
-    }
-    .btn-primary:hover {
-        background: var(--accent-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgba(45,122,111,0.3);
-    }
-    .btn-secondary {
-        background: none; border: 2px solid var(--border); color: var(--text);
-        padding: 14px 28px; border-radius: 50px; font-weight: 600;
-        font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
-        font-family: 'DM Sans', sans-serif;
-    }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* Right side: Stats card */
-    .hero-stats-card {
-        background: var(--surface); border-radius: 20px;
-        padding: 32px; border: 1px solid var(--border);
-        box-shadow: var(--shadow-lg); position: relative;
-    }
-    .hero-stats-label {
-        font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px;
-        color: var(--accent); text-transform: uppercase; margin-bottom: 24px;
-    }
-    .hero-stats-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
-    }
-    .hero-stat-item {}
-    .hero-stat-value {
-        font-family: 'Fraunces', serif; font-size: 2.4rem;
-        font-weight: 800; line-height: 1; margin-bottom: 4px;
-    }
-    .hero-stat-value.accent { color: var(--accent); }
-    .hero-stat-value.gold { color: var(--gold); }
-    .hero-stat-desc {
-        font-size: 0.82rem; color: var(--text-muted);
-    }
-    .hero-stats-bar {
-        height: 4px; width: 100%; background: var(--bg-alt); border-radius: 2px;
-        overflow: hidden; margin-bottom: 20px;
-    }
-    .hero-stats-bar-fill {
-        height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--gold));
-        border-radius: 2px; animation: barFill 2s ease forwards 0.5s;
-    }
-    @keyframes barFill { to { width: 85%; } }
-
-    .hero-floating-tag {
-        position: absolute; bottom: -16px; right: -16px;
-        background: var(--surface); padding: 12px 18px;
-        border-radius: 12px; border: 1px solid var(--border);
-        box-shadow: var(--shadow-md);
-        display: flex; align-items: center; gap: 10px;
-        animation: float 5s ease-in-out infinite;
-    }
-    .hero-floating-tag-icon {
-        width: 36px; height: 36px; border-radius: 10px;
-        background: var(--accent-light); display: flex;
-        align-items: center; justify-content: center;
-    }
-    .hero-floating-tag-icon svg { width: 18px; height: 18px; color: var(--accent); }
-    .hero-floating-tag-text { font-size: 0.82rem; }
-    .hero-floating-tag-text strong { display: block; font-weight: 700; }
-    .hero-floating-tag-text span { color: var(--text-muted); font-size: 0.72rem; }
-
-    .hero-trust-row {
-        display: flex; gap: 32px; margin-top: 48px; flex-wrap: wrap;
-    }
-    .hero-trust-item {
-        display: flex; align-items: center; gap: 8px;
-    }
-    .hero-trust-icon {
-        width: 20px; height: 20px; border-radius: 50%;
-        background: var(--accent-light); display: flex;
-        align-items: center; justify-content: center;
-    }
-    .hero-trust-icon svg { width: 12px; height: 12px; color: var(--accent); }
-    .hero-trust-text { font-size: 0.82rem; color: var(--text-muted); }
-
-    @media (max-width: 900px) {
-        .hero-content {
-            grid-template-columns: 1fr; text-align: center;
-        }
-        .hero-desc { margin-left: auto; margin-right: auto; }
-        .hero-actions { justify-content: center; }
-        .hero-trust-row { justify-content: center; }
-        .hero-stats-card { max-width: 420px; margin: 0 auto; }
-    }
-</style>
-
-<section class="hero-section" id="hero">
-    <div class="hero-bg-circle-1"></div>
-    <div class="hero-bg-circle-2"></div>
-    <div class="hero-grid-bg"></div>
-
-    <div class="hero-content">
-        <!-- Left -->
-        <div>
-            <div class="hero-badge reveal">
-                <div class="hero-badge-dot"></div>
-                <span class="hero-badge-text">Proposal Eksklusif — NAMA Marine</span>
-            </div>
-
-            <h1 class="hero-title reveal reveal-delay-1">
-                Dari Chat Berantakan,<br>
-                <span class="hero-title-accent">Jadi Sistem Booking Otomatis</span>
-            </h1>
-
-            <p class="hero-desc reveal reveal-delay-2">
-                Semua reservasi Sepa Island — dari pertanyaan harga, booking kamar, sampai pengingat otomatis — 
-                <strong>ditangani oleh AI 24 jam nonstop.</strong>
-                Tim Anda tinggal terima beres.
-            </p>
-
-            <div class="hero-actions reveal reveal-delay-3">
-                <button class="btn-primary" onclick="document.getElementById('modul').scrollIntoView({behavior:'smooth'})">
-                    Lihat Apa yang Didapat
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-                </button>
-                <button class="btn-secondary" onclick="document.getElementById('cara-kerja').scrollIntoView({behavior:'smooth'})">
-                    Cara Kerjanya
+        <div class="lock-title">Dokumen Terkunci</div>
+        <p class="lock-subtitle">Masukkan password untuk mengakses proposal ini</p>
+        <form id="lock-form" autocomplete="off">
+            <div class="lock-input-wrap">
+                <input type="password" id="lock-password" class="lock-input" placeholder="Masukkan password..." autofocus autocomplete="off">
+                <button type="button" class="lock-toggle-pw" onclick="togglePw()">
+                    <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
                 </button>
             </div>
-
-            <div class="hero-trust-row reveal reveal-delay-4">
-                <div class="hero-trust-item">
-                    <div class="hero-trust-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    </div>
-                    <span class="hero-trust-text">Tanpa download aplikasi</span>
-                </div>
-                <div class="hero-trust-item">
-                    <div class="hero-trust-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    </div>
-                    <span class="hero-trust-text">Lewat WhatsApp biasa</span>
-                </div>
-                <div class="hero-trust-item">
-                    <div class="hero-trust-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    </div>
-                    <span class="hero-trust-text">Garansi uang kembali</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right: Stats card -->
-        <div class="reveal reveal-delay-2">
-            <div class="hero-stats-card">
-                <div class="hero-stats-label">Setelah Sistem Jalan</div>
-                <div class="hero-stats-grid">
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value accent">95%</div>
-                        <div class="hero-stat-desc">Booking lebih cepat</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value gold">24/7</div>
-                        <div class="hero-stat-desc">AI selalu aktif</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value accent">0</div>
-                        <div class="hero-stat-desc">Double booking</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value gold">6x</div>
-                        <div class="hero-stat-desc">ROI di tahun pertama</div>
-                    </div>
-                </div>
-                <div class="hero-stats-bar"><div class="hero-stats-bar-fill"></div></div>
-                <div style="font-size:0.78rem; color:var(--text-muted);">Estimasi berdasarkan data operasional serupa</div>
-
-                <div class="hero-floating-tag">
-                    <div class="hero-floating-tag-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                    </div>
-                    <div class="hero-floating-tag-text">
-                        <strong>Data Aman</strong>
-                        <span>Server privat + backup harian</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ======= 03-masalah.html ======= -->
-<!-- ============================================
-     SECTION 03: MASALAH (Problems)
-     ============================================ -->
-<style>
-    .masalah-section {
-        padding: 100px 24px; background: var(--surface);
-    }
-    .section-tag {
-        display: inline-block; padding: 6px 16px; border-radius: 50px;
-        font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
-        text-transform: uppercase; margin-bottom: 16px;
-    }
-    .section-tag.coral { background: var(--coral-light); color: var(--coral); }
-    .section-tag.accent { background: var(--accent-light); color: var(--accent); }
-    .section-tag.gold { background: var(--gold-light); color: var(--gold); }
-    .section-tag.navy { background: var(--navy-light); color: var(--navy); }
-    .section-title {
-        font-size: clamp(2rem, 3.5vw, 2.8rem);
-        font-weight: 800; margin-bottom: 12px; letter-spacing: -1px;
-    }
-    .section-subtitle {
-        font-size: 1.05rem; color: var(--text-secondary); max-width: 560px;
-        margin-bottom: 56px; line-height: 1.7;
-    }
-    .section-subtitle.center { margin-left: auto; margin-right: auto; }
-    .center { text-align: center; }
-
-    .masalah-grid {
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-        max-width: 1140px; margin: 0 auto;
-    }
-    .masalah-card {
-        background: var(--bg); border-radius: var(--radius);
-        padding: 36px 28px; border: 1px solid var(--border-light);
-        position: relative; overflow: hidden;
-    }
-    .masalah-card::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0;
-        height: 4px;
-    }
-    .masalah-card.card-coral::before { background: var(--coral); }
-    .masalah-card.card-gold::before { background: var(--gold); }
-    .masalah-card.card-navy::before { background: var(--navy); }
-    .masalah-num {
-        font-family: 'Fraunces', serif; font-size: 0.88rem;
-        font-weight: 700; margin-bottom: 16px;
-    }
-    .masalah-num.coral { color: var(--coral); }
-    .masalah-num.gold { color: var(--gold); }
-    .masalah-num.navy { color: var(--navy); }
-    .masalah-card h3 {
-        font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;
-    }
-    .masalah-card p {
-        font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65;
-    }
-    .masalah-icon {
-        width: 52px; height: 52px; border-radius: 14px;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 20px;
-    }
-    .masalah-icon.coral { background: var(--coral-light); }
-    .masalah-icon.gold { background: var(--gold-light); }
-    .masalah-icon.navy { background: var(--navy-light); }
-    .masalah-icon svg { width: 24px; height: 24px; }
-
-    .masalah-impact {
-        margin-top: 48px; max-width: 1140px; margin-left: auto; margin-right: auto;
-        background: linear-gradient(135deg, #FEF2EC, #FBF5E8);
-        border-radius: var(--radius); padding: 32px 36px;
-        border: 1px solid #F0DDD4;
-        display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-    }
-    .masalah-impact-icon {
-        width: 48px; height: 48px; border-radius: 12px;
-        background: var(--coral); display: flex;
-        align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .masalah-impact-icon svg { width: 22px; height: 22px; color: white; }
-    .masalah-impact-text {
-        flex: 1;
-    }
-    .masalah-impact-text strong {
-        display: block; font-size: 1.05rem; margin-bottom: 4px;
-    }
-    .masalah-impact-text span {
-        font-size: 0.9rem; color: var(--text-secondary);
-    }
-
-    @media (max-width: 900px) {
-        .masalah-grid { grid-template-columns: 1fr; }
-        .masalah-impact { flex-direction: column; text-align: center; }
-    }
-</style>
-
-<section class="masalah-section" id="masalah">
-    <div class="container center">
-        <span class="section-tag coral reveal">Kenapa Butuh Perubahan</span>
-        <h2 class="section-title reveal reveal-delay-1">
-            3 Masalah Utama yang Bikin<br>Revenue Bocor
-        </h2>
-        <p class="section-subtitle center reveal reveal-delay-2">
-            Ini bukan soal teknologi canggih. Ini soal berapa banyak uang yang hilang setiap hari karena proses manual.
-        </p>
-    </div>
-
-    <div class="masalah-grid container">
-        <!-- Card 1 -->
-        <div class="masalah-card card-coral card-hover reveal reveal-delay-1">
-            <div class="masalah-icon coral">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#D4654A" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/><path d="M14 2v6h6"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
-            </div>
-            <div class="masalah-num coral">01</div>
-            <h3>Catat Booking di Excel</h3>
-            <p>100+ kamar dicatat manual. Sering double booking, salah harga, dan data hilang kalau file corrupt. Staf harus bolak-balik cek spreadsheet.</p>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="masalah-card card-gold card-hover reveal reveal-delay-2">
-            <div class="masalah-icon gold">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#C8A45C" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            </div>
-            <div class="masalah-num gold">02</div>
-            <h3>WhatsApp Overload</h3>
-            <p>Banyak akun WA, chat masuk nonstop, tapi sering terlewat. Tidak ada riwayat percakapan yang rapi. Staf kewalahan, apalagi di musim liburan.</p>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="masalah-card card-navy card-hover reveal reveal-delay-3">
-            <div class="masalah-icon navy">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#2A3F5F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M16 8l-4 4-4-4"/><path d="M12 12v6"/></svg>
-            </div>
-            <div class="masalah-num navy">03</div>
-            <h3>Hitung Harga Ribet</h3>
-            <p>Weekday beda Weekend beda High Season. Tambah kamar premium, diskon anak, paket snorkeling — semuanya dihitung manual. Sering salah kasih harga.</p>
-        </div>
-    </div>
-
-    <!-- Impact callout -->
-    <div class="masalah-impact container reveal reveal-delay-4">
-        <div class="masalah-impact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <div class="masalah-impact-text">
-            <strong>Estimasi: Rp 8-15 juta/bulan hilang sia-sia</strong>
-            <span>Dari double booking, chat terlewat, salah kasih harga, dan pelanggan yang batal karena respons lambat.</span>
-        </div>
-    </div>
-</section>
-
-<!-- ======= 04-solusi.html ======= -->
-<!-- ============================================
-     SECTION 04: SOLUSI (Solution overview)
-     ============================================ -->
-<style>
-    .solusi-section {
-        padding: 100px 24px; background: var(--bg);
-    }
-    .solusi-flow {
-        max-width: 1140px; margin: 0 auto;
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-    }
-    .solusi-card {
-        background: var(--surface); border-radius: var(--radius);
-        padding: 40px 28px; text-align: center;
-        border: 1px solid var(--border-light); position: relative;
-    }
-    .solusi-number {
-        position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-        width: 36px; height: 36px; border-radius: 50%;
-        background: var(--accent); color: white;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 0.88rem;
-        box-shadow: 0 4px 12px rgba(45,122,111,0.3);
-    }
-    .solusi-icon-wrap {
-        width: 68px; height: 68px; border-radius: 18px;
-        margin: 0 auto 20px; display: flex;
-        align-items: center; justify-content: center;
-    }
-    .solusi-icon-wrap.green { background: var(--accent-light); }
-    .solusi-icon-wrap.gold { background: var(--gold-light); }
-    .solusi-icon-wrap.navy { background: var(--navy-light); }
-    .solusi-icon-wrap svg { width: 30px; height: 30px; }
-    .solusi-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
-    .solusi-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
-    .solusi-output {
-        margin-top: 16px; display: inline-block;
-        padding: 6px 14px; border-radius: 8px;
-        background: var(--bg-alt); font-size: 0.78rem;
-        color: var(--text-muted); font-weight: 500;
-    }
-    .solusi-output strong { color: var(--accent); }
-
-    .solusi-connector {
-        position: absolute; right: -36px; top: 50%; transform: translateY(-50%);
-        z-index: 3;
-    }
-    .solusi-connector svg { width: 24px; height: 24px; color: var(--accent); }
-
-    .solusi-summary {
-        max-width: 720px; margin: 56px auto 0; text-align: center;
-        padding: 28px 32px; border-radius: var(--radius);
-        background: linear-gradient(135deg, var(--accent-light), #F0FAF7);
-        border: 1px solid rgba(45,122,111,0.15);
-    }
-    .solusi-summary p {
-        font-size: 1rem; color: var(--text-secondary); line-height: 1.7;
-    }
-    .solusi-summary strong { color: var(--accent); }
-
-    @media (max-width: 900px) {
-        .solusi-flow { grid-template-columns: 1fr; }
-        .solusi-connector { display: none; }
-    }
-</style>
-
-<section class="solusi-section" id="solusi">
-    <div class="container center">
-        <span class="section-tag accent reveal">Solusinya</span>
-        <h2 class="section-title reveal reveal-delay-1">
-            Tamu Chat di WhatsApp,<br>Sistem yang Kerjakan Sisanya
-        </h2>
-        <p class="section-subtitle center reveal reveal-delay-2">
-            Pelanggan tetap chat seperti biasa. Di belakang layar, AI dan database yang mengurus semuanya.
-        </p>
-    </div>
-
-    <div class="solusi-flow container">
-        <!-- Step 1 -->
-        <div class="solusi-card card-hover reveal reveal-delay-1" style="position:relative;">
-            <div class="solusi-number">1</div>
-            <div class="solusi-icon-wrap green">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#2D7A6F" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-            </div>
-            <h3>Tamu Chat di WhatsApp</h3>
-            <p>Pelanggan kirim pesan seperti biasa. Tidak perlu download aplikasi apapun.</p>
-            <div class="solusi-output"><strong>Masuk:</strong> Pesan biasa</div>
-            <div class="solusi-connector" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </div>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="solusi-card card-hover reveal reveal-delay-2" style="position:relative;">
-            <div class="solusi-number">2</div>
-            <div class="solusi-icon-wrap gold">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#C8A45C" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>
-            </div>
-            <h3>AI Memahami Permintaan</h3>
-            <p>"Booking 4 orang 25 Des" — AI langsung paham siapa, kapan, berapa orang, mau kamar apa.</p>
-            <div class="solusi-output"><strong>Proses:</strong> Pahami & cari data</div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="solusi-card card-hover reveal reveal-delay-3">
-            <div class="solusi-number">3</div>
-            <div class="solusi-icon-wrap navy">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#2A3F5F" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-            </div>
-            <h3>Database Hitung & Cek</h3>
-            <p>Harga otomatis dihitung. Kamar kosong langsung dicek. Double booking? Mustahil.</p>
-            <div class="solusi-output"><strong>Hasil:</strong> Jawaban akurat</div>
-        </div>
-    </div>
-
-    <div class="solusi-summary reveal reveal-delay-4 container">
-        <p>
-            <strong>Hasilnya?</strong> Pelanggan dapat jawaban dalam hitungan detik, 24 jam nonstop. 
-            Staf Anda tidak perlu lagi hitung manual atau cek spreadsheet. 
-            <strong>Semua otomatis, semua akurat.</strong>
-        </p>
-    </div>
-</section>
-
-<!-- ======= 05-modul.html ======= -->
-<!-- ============================================
-     SECTION 05: MODUL (Module breakdown)
-     ============================================ -->
-<style>
-    .modul-section {
-        padding: 100px 24px; background: var(--surface);
-    }
-    .modul-grid {
-        max-width: 1140px; margin: 0 auto;
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
-    }
-    .modul-card {
-        background: var(--bg); border-radius: var(--radius);
-        border: 1px solid var(--border-light); overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .modul-card:hover {
-        border-color: rgba(45,122,111,0.3);
-        box-shadow: var(--shadow-md);
-    }
-    .modul-card-header {
-        padding: 28px 28px 0; display: flex; gap: 16px; align-items: flex-start;
-    }
-    .modul-card-icon {
-        width: 52px; height: 52px; border-radius: 14px;
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .modul-card-icon svg { width: 24px; height: 24px; }
-    .modul-card-meta {}
-    .modul-card-meta .modul-label {
-        font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
-        text-transform: uppercase; margin-bottom: 4px;
-    }
-    .modul-card-meta h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
-    .modul-card-meta p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
-
-    .modul-card-body {
-        padding: 20px 28px 28px;
-    }
-    .modul-feature-list {
-        display: flex; flex-direction: column; gap: 8px;
-    }
-    .modul-feature-item {
-        display: flex; align-items: flex-start; gap: 10px;
-        padding: 8px 0; font-size: 0.88rem; color: var(--text-secondary);
-    }
-    .modul-feature-check {
-        width: 20px; height: 20px; border-radius: 6px;
-        background: var(--accent-light); display: flex;
-        align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
-    }
-    .modul-feature-check svg { width: 12px; height: 12px; color: var(--accent); }
-    .modul-value-tag {
-        display: inline-block; margin-top: 16px;
-        padding: 6px 14px; border-radius: 8px;
-        font-size: 0.78rem; font-weight: 600;
-    }
-
-    /* Color variants */
-    .modul-accent .modul-card-icon { background: var(--accent-light); }
-    .modul-accent .modul-card-icon svg { color: var(--accent); stroke: var(--accent); }
-    .modul-accent .modul-label { color: var(--accent); }
-    .modul-accent .modul-value-tag { background: var(--accent-light); color: var(--accent); }
-
-    .modul-gold .modul-card-icon { background: var(--gold-light); }
-    .modul-gold .modul-card-icon svg { color: var(--gold); stroke: var(--gold); }
-    .modul-gold .modul-label { color: var(--gold); }
-    .modul-gold .modul-value-tag { background: var(--gold-light); color: var(--gold); }
-
-    .modul-coral .modul-card-icon { background: var(--coral-light); }
-    .modul-coral .modul-card-icon svg { color: var(--coral); stroke: var(--coral); }
-    .modul-coral .modul-label { color: var(--coral); }
-    .modul-coral .modul-value-tag { background: var(--coral-light); color: var(--coral); }
-
-    .modul-navy .modul-card-icon { background: var(--navy-light); }
-    .modul-navy .modul-card-icon svg { color: var(--navy); stroke: var(--navy); }
-    .modul-navy .modul-label { color: var(--navy); }
-    .modul-navy .modul-value-tag { background: var(--navy-light); color: var(--navy); }
-
-    /* Full width card */
-    .modul-card.full-width { grid-column: 1 / -1; }
-    .modul-card.full-width .modul-card-body {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-    }
-
-    /* Total value bar */
-    .modul-total {
-        max-width: 1140px; margin: 40px auto 0;
-        background: linear-gradient(135deg, var(--bg-dark), #1E2530);
-        border-radius: var(--radius); padding: 32px 36px;
-        display: flex; align-items: center; justify-content: space-between;
-        flex-wrap: wrap; gap: 20px; color: white;
-    }
-    .modul-total-left h3 {
-        color: white; font-size: 1.3rem; margin-bottom: 4px;
-    }
-    .modul-total-left p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
-    .modul-total-right {
-        text-align: right;
-    }
-    .modul-total-value {
-        font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 800;
-        color: var(--gold);
-    }
-    .modul-total-price {
-        font-size: 0.88rem; color: rgba(255,255,255,0.5);
-        text-decoration: line-through;
-    }
-    .modul-total-actual {
-        font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 800;
-        color: white; display: block; line-height: 1;
-    }
-
-    @media (max-width: 900px) {
-        .modul-grid { grid-template-columns: 1fr; }
-        .modul-card.full-width .modul-card-body { grid-template-columns: 1fr; }
-        .modul-total { flex-direction: column; text-align: center; }
-        .modul-total-right { text-align: center; }
-    }
-</style>
-
-<section class="modul-section" id="modul">
-    <div class="container center">
-        <span class="section-tag accent reveal">Yang Anda Dapatkan</span>
-        <h2 class="section-title reveal reveal-delay-1">
-            6 Modul Lengkap,<br>Satu Sistem Terintegrasi
-        </h2>
-        <p class="section-subtitle center reveal reveal-delay-2">
-            Setiap modul punya fungsi spesifik. Semua bekerja bersama supaya reservasi berjalan mulus dari awal sampai akhir.
-        </p>
-    </div>
-
-    <div class="modul-grid container">
-
-        <!-- MODULE 1: AI WhatsApp Chatbot -->
-        <div class="modul-card modul-accent reveal reveal-delay-1">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 1</div>
-                    <h3>AI Chatbot WhatsApp</h3>
-                    <p>Asisten virtual yang jawab pertanyaan pelanggan 24 jam, dari tanya harga sampai proses booking.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Jawab pertanyaan harga & ketersediaan kamar otomatis</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Paham bahasa Indonesia & Inggris (auto-detect)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Kirim rincian harga lengkap dalam hitungan detik</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Jawab pertanyaan kebijakan (cancel, corkage, bagasi)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Eskalasi otomatis ke staf jika AI tidak bisa jawab</span>
-                    </div>
-                </div>
-                <div style="margin-top:12px; padding:10px 14px; background:var(--gold-light); border-radius:8px; font-size:0.82rem; color:var(--gold);">
-                    <strong>Opsional:</strong> Bisa pakai platform Cekat AI atau cukup WhatsApp biasa untuk hemat budget
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 12 juta</div>
-            </div>
-        </div>
-
-        <!-- MODULE 2: Database & Harga Otomatis -->
-        <div class="modul-card modul-navy reveal reveal-delay-2">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 2</div>
-                    <h3>Database & Harga Otomatis</h3>
-                    <p>Pusat data semua kamar, harga, dan ketersediaan. Hitung harga otomatis tanpa salah.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Data 100+ kamar tersimpan rapi & realtime</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Harga weekday, weekend, high season otomatis</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Diskon anak, premium kamar, paket tambahan terhitung</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Anti double booking — cek ketersediaan realtime</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Sarankan kamar alternatif jika penuh</span>
-                    </div>
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 10 juta</div>
-            </div>
-        </div>
-
-        <!-- MODULE 3: Automation Workflows -->
-        <div class="modul-card modul-gold reveal reveal-delay-1">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 3</div>
-                    <h3>Otomasi Proses Booking</h3>
-                    <p>Dari booking masuk sampai tamu berangkat — semua berjalan otomatis tanpa harus dicek manual.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Invoice otomatis dikirim ke WhatsApp + Email</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Pengingat bayar (24 jam setelah booking)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Pengingat H-7 (minta data KTP untuk SIB)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Pengingat H-1 (e-ticket + checklist berangkat)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Follow-up setelah trip (minta review + promo next)</span>
-                    </div>
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 10 juta</div>
-            </div>
-        </div>
-
-        <!-- MODULE 4: Verifikasi Pembayaran -->
-        <div class="modul-card modul-coral reveal reveal-delay-2">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 4</div>
-                    <h3>Verifikasi Pembayaran</h3>
-                    <p>Tamu kirim bukti transfer, sistem langsung cocokkan dengan invoice dan konfirmasi otomatis.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Baca bukti transfer otomatis (OCR)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Cocokkan nominal dengan invoice</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Konfirmasi + kirim e-ticket otomatis</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Lacak status pembayaran tiap booking</span>
-                    </div>
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 6 juta</div>
-            </div>
-        </div>
-
-        <!-- MODULE 5: Admin Dashboard -->
-        <div class="modul-card modul-accent reveal reveal-delay-1">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 5</div>
-                    <h3>Dashboard Admin</h3>
-                    <p>Satu layar untuk lihat semua: booking hari ini, kamar kosong, pendapatan, dan percakapan chat.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Lihat semua booking (hari ini, minggu ini, bulan ini)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Status kamar realtime (kosong / terisi / menunggu bayar)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Laporan pendapatan otomatis</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Akses multi-staf (admin, manager, staf biasa)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Bisa diakses dari HP maupun komputer</span>
-                    </div>
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 8 juta</div>
-            </div>
-        </div>
-
-        <!-- MODULE 6: Dashboard Charter & Laporan Operasional -->
-        <div class="modul-card modul-gold reveal reveal-delay-2">
-            <div class="modul-card-header">
-                <div class="modul-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>
-                </div>
-                <div class="modul-card-meta">
-                    <div class="modul-label">Modul 6</div>
-                    <h3>Dashboard Charter & Laporan Operasional</h3>
-                    <p>Pantau seluruh aktivitas charter kapal, laporan kapten, dan rekap biaya operasional dalam satu dashboard.</p>
-                </div>
-            </div>
-            <div class="modul-card-body">
-                <div class="modul-feature-list">
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Dashboard charter sewa kapal (jadwal, status, ketersediaan)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Report kapten kapal (log perjalanan & kondisi kapal)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Rekap pembelian bahan bakar (solar, oli, dll)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Rekap biaya operasional lainnya (crew, perawatan, logistik)</span>
-                    </div>
-                    <div class="modul-feature-item">
-                        <div class="modul-feature-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <span>Laporan profit & loss per trip charter</span>
-                    </div>
-                </div>
-                <div class="modul-value-tag">Nilai: ~Rp 8 juta</div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Total Value Bar -->
-    <div class="modul-total container reveal reveal-delay-3">
-        <div class="modul-total-left">
-            <h3>Total Nilai 6 Modul</h3>
-            <p>Kalau dibangun satu per satu di tempat lain</p>
-        </div>
-        <div class="modul-total-right">
-            <div class="modul-total-price">Rp 150.000.000</div>
-            <span class="modul-total-actual">Rp 50 juta</span>
-            <div style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-top:4px;">Hemat 67% — paket lengkap · Bisa cicil s/d 6 bulan</div>
-        </div>
-    </div>
-</section>
-
-<!-- ======= 06-cara-kerja.html ======= -->
-<!-- ============================================
-     SECTION 06: CARA KERJA (How it works)
-     ============================================ -->
-<style>
-    .cara-kerja-section {
-        padding: 100px 24px; background: var(--bg);
-    }
-    .demo-grid {
-        max-width: 1140px; margin: 0 auto;
-        display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
-    }
-    .demo-chat-window {
-        background: var(--surface); border-radius: var(--radius);
-        border: 1px solid var(--border); overflow: hidden;
-        box-shadow: var(--shadow-md);
-    }
-    .demo-chat-header {
-        padding: 14px 20px; border-bottom: 1px solid var(--border-light);
-        display: flex; align-items: center; gap: 10px;
-        background: var(--bg);
-    }
-    .demo-chat-header-dot {
-        width: 10px; height: 10px; border-radius: 50%; background: #25D366;
-    }
-    .demo-chat-header span { font-weight: 600; font-size: 0.88rem; }
-    .demo-chat-body {
-        padding: 20px; display: flex; flex-direction: column; gap: 12px;
-        min-height: 320px; background: #F7F8FA;
-    }
-    .chat-msg {
-        max-width: 85%; padding: 12px 16px; border-radius: 14px;
-        font-size: 0.88rem; line-height: 1.55;
-    }
-    .chat-msg.user {
-        background: white; border: 1px solid var(--border-light);
-        align-self: flex-start; border-bottom-left-radius: 4px;
-    }
-    .chat-msg.bot {
-        background: var(--accent); color: white;
-        align-self: flex-end; border-bottom-right-radius: 4px;
-    }
-    .chat-msg.bot strong { color: white; }
-
-    .demo-steps {
-        display: flex; flex-direction: column; gap: 16px;
-    }
-    .demo-step-card {
-        background: var(--surface); border-radius: var(--radius-sm);
-        padding: 20px; border-left: 4px solid var(--accent);
-        box-shadow: var(--shadow-sm);
-    }
-    .demo-step-card.step-gold { border-left-color: var(--gold); }
-    .demo-step-card.step-coral { border-left-color: var(--coral); }
-    .demo-step-num {
-        width: 28px; height: 28px; border-radius: 50%;
-        background: var(--accent); color: white;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-weight: 700; font-size: 0.78rem; margin-right: 10px;
-    }
-    .demo-step-card.step-gold .demo-step-num { background: var(--gold); }
-    .demo-step-card.step-coral .demo-step-num { background: var(--coral); }
-    .demo-step-label {
-        font-size: 0.68rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; margin-bottom: 6px;
-    }
-    .demo-step-card h4 { font-size: 0.95rem; margin-bottom: 6px; }
-    .demo-step-card p { font-size: 0.82rem; color: var(--text-muted); }
-
-    .demo-scenario-title {
-        display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
-    }
-    .demo-scenario-badge {
-        padding: 6px 14px; border-radius: 8px;
-        font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; background: var(--accent-light); color: var(--accent);
-    }
-    .demo-scenario-name { font-size: 1.15rem; font-weight: 700; }
-
-    .demo-separator {
-        max-width: 1140px; margin: 60px auto; height: 1px;
-        background: var(--border-light);
-    }
-
-    @media (max-width: 900px) {
-        .demo-grid { grid-template-columns: 1fr; }
-    }
-</style>
-
-<section class="cara-kerja-section" id="cara-kerja">
-    <div class="container center">
-        <span class="section-tag accent reveal">Begini Cara Kerjanya</span>
-        <h2 class="section-title reveal reveal-delay-1">
-            Tamu Chat Biasa,<br>AI yang Kerja di Belakang
-        </h2>
-        <p class="section-subtitle center reveal reveal-delay-2">
-            Berikut contoh nyata percakapan yang akan ditangani sistem. Semua otomatis.
-        </p>
-    </div>
-
-    <!-- SCENARIO 1: Booking Inquiry -->
-    <div class="container reveal reveal-delay-2" style="margin-top:48px;">
-        <div class="demo-scenario-title">
-            <span class="demo-scenario-badge">Skenario 1</span>
-            <span class="demo-scenario-name">Tanya Harga & Booking</span>
-        </div>
-        <div class="demo-grid">
-            <div class="demo-chat-window">
-                <div class="demo-chat-header">
-                    <div class="demo-chat-header-dot"></div>
-                    <span>WhatsApp Chat</span>
-                </div>
-                <div class="demo-chat-body">
-                    <div class="chat-msg user">
-                        Halo, mau booking untuk 4 orang (2 dewasa, 2 anak) tanggal 25-26 Desember. Ada kamar yang view pantai?
-                    </div>
-                    <div class="chat-msg bot">
-                        Halo! Terima kasih sudah menghubungi NAMA Marine 🏝️<br><br>
-                        Saya cek untuk tanggal <strong>25-26 Desember</strong> (High Season):<br><br>
-                        ✅ <strong>Tersedia: Cottage Penyu Beach Front</strong><br><br>
-                        📋 <strong>Rincian Harga:</strong><br>
-                        • 2 Dewasa × Rp 1.200.000 = Rp 2.400.000<br>
-                        • 2 Anak × Rp 1.200.000 = Rp 2.400.000<br>
-                        • Beach Front Premium = Rp 400.000<br><br>
-                        💰 <strong>Total: Rp 5.200.000</strong><br>
-                        <span style="opacity:0.8; font-size:0.82rem;">Termasuk: Transport PP, 3× Meals, Snorkeling</span><br><br>
-                        Mau saya buatkan invoice-nya? 😊
-                    </div>
-                </div>
-            </div>
-            <div class="demo-steps">
-                <div class="demo-step-card">
-                    <div class="demo-step-label" style="color:var(--accent);">
-                        <span class="demo-step-num">1</span> AI Baca Pesan
-                    </div>
-                    <h4>Pahami Permintaan</h4>
-                    <p>AI langsung tahu: 4 orang, 2 dewasa + 2 anak, tanggal 25-26 Des, mau kamar view pantai.</p>
-                </div>
-                <div class="demo-step-card step-gold">
-                    <div class="demo-step-label" style="color:var(--gold);">
-                        <span class="demo-step-num">2</span> Cek Database
-                    </div>
-                    <h4>Cari Kamar Kosong</h4>
-                    <p>Sistem cek ketersediaan kamar beach front untuk tanggal itu. Hasilnya: Cottage Penyu tersedia.</p>
-                </div>
-                <div class="demo-step-card step-coral">
-                    <div class="demo-step-label" style="color:var(--coral);">
-                        <span class="demo-step-num">3</span> Hitung Harga
-                    </div>
-                    <h4>Kalkulasi Otomatis</h4>
-                    <p>Harga high season × jumlah orang + premium kamar = total akurat. Tidak perlu kalkulator.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="demo-separator"></div>
-
-    <!-- SCENARIO 2: Reschedule -->
-    <div class="container reveal">
-        <div class="demo-scenario-title">
-            <span class="demo-scenario-badge">Skenario 2</span>
-            <span class="demo-scenario-name">Pindah Jadwal Booking</span>
-        </div>
-        <div class="demo-grid">
-            <div class="demo-chat-window">
-                <div class="demo-chat-header">
-                    <div class="demo-chat-header-dot"></div>
-                    <span>WhatsApp Chat</span>
-                </div>
-                <div class="demo-chat-body">
-                    <div class="chat-msg user">
-                        Halo saya Budi. Booking tanggal 20 Jan mau diundur ke 27 Jan bisa?
-                    </div>
-                    <div class="chat-msg bot">
-                        Halo Kak Budi! 👋<br><br>
-                        Saya cek booking Anda:<br>
-                        📋 <strong>INV-2026-0142</strong><br>
-                        • Check-in: 20 Jan 2026<br>
-                        • Cottage Penyu (2 pax)<br>
-                        • Status: <span style="color:#A5F3C0;">CONFIRMED</span><br><br>
-                        ✅ <strong>Tanggal 27 Jan tersedia!</strong><br>
-                        Karena reschedule H-7, <strong>GRATIS</strong> tanpa biaya tambahan.<br><br>
-                        Mau saya pindahkan ke 27 Jan? 🗓️
-                    </div>
-                    <div class="chat-msg user">Iya tolong pindahkan</div>
-                    <div class="chat-msg bot">
-                        Done! ✅<br><br>
-                        Booking sudah dipindahkan:<br>
-                        📅 <strong>Check-in: 27 Jan 2026</strong><br>
-                        📅 <strong>Check-out: 28 Jan 2026</strong><br><br>
-                        Sampai jumpa di Sepa Island! 🏝️
-                    </div>
-                </div>
-            </div>
-            <div class="demo-steps">
-                <div class="demo-step-card">
-                    <div class="demo-step-label" style="color:var(--accent);">
-                        <span class="demo-step-num">1</span> Cari Booking
-                    </div>
-                    <h4>Kenali Tamu dari Nama</h4>
-                    <p>AI cari data booking "Budi" yang check-in 20 Jan. Ketemu: INV-2026-0142, status confirmed.</p>
-                </div>
-                <div class="demo-step-card step-gold">
-                    <div class="demo-step-label" style="color:var(--gold);">
-                        <span class="demo-step-num">2</span> Cek Kebijakan
-                    </div>
-                    <h4>Aturan Pindah Jadwal</h4>
-                    <p>Reschedule H-7 = gratis. Tanggal baru tersedia. Semua syarat terpenuhi otomatis.</p>
-                </div>
-                <div class="demo-step-card step-coral">
-                    <div class="demo-step-label" style="color:var(--coral);">
-                        <span class="demo-step-num">3</span> Update Booking
-                    </div>
-                    <h4>Langsung Diubah</h4>
-                    <p>Tanggal di-update di database. Kamar lama dibebaskan, kamar baru ditandai. Selesai dalam detik.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="demo-separator"></div>
-
-    <!-- SCENARIO 3: Payment -->
-    <div class="container reveal">
-        <div class="demo-scenario-title">
-            <span class="demo-scenario-badge">Skenario 3</span>
-            <span class="demo-scenario-name">Konfirmasi Pembayaran</span>
-        </div>
-        <div class="demo-grid">
-            <div class="demo-chat-window">
-                <div class="demo-chat-header">
-                    <div class="demo-chat-header-dot"></div>
-                    <span>WhatsApp Chat</span>
-                </div>
-                <div class="demo-chat-body">
-                    <div class="chat-msg user">Sudah transfer 5.2jt ke BCA ya. Ini buktinya</div>
-                    <div class="chat-msg user" style="background:#F1F5F9; padding:12px; font-style:italic; color:var(--text-muted); font-size:0.82rem;">
-                        📷 bukti_transfer.jpg
-                    </div>
-                    <div class="chat-msg bot">
-                        Terima kasih! 🙏<br><br>
-                        ✅ <strong>Pembayaran TERVERIFIKASI</strong><br><br>
-                        📋 <strong>Detail Booking:</strong><br>
-                        • Invoice: INV-2026-0156<br>
-                        • Nama: Sarah Wijaya<br>
-                        • Tanggal: 25-26 Des 2026<br>
-                        • Jumlah: Rp 5.200.000 ✓<br><br>
-                        📧 E-ticket sudah dikirim ke email Anda!<br><br>
-                        Mohon isi data penumpang untuk SIB ya! 📝
-                    </div>
-                </div>
-            </div>
-            <div class="demo-steps">
-                <div class="demo-step-card">
-                    <div class="demo-step-label" style="color:var(--accent);">
-                        <span class="demo-step-num">1</span> Baca Bukti Transfer
-                    </div>
-                    <h4>Deteksi Nominal & Bank</h4>
-                    <p>AI baca foto bukti transfer: nominal Rp 5.200.000, dari BCA, tanggal hari ini.</p>
-                </div>
-                <div class="demo-step-card step-gold">
-                    <div class="demo-step-label" style="color:var(--gold);">
-                        <span class="demo-step-num">2</span> Cocokkan Invoice
-                    </div>
-                    <h4>Verifikasi Otomatis</h4>
-                    <p>Nominal di bukti transfer = nominal di invoice? Cocok 100%. Bayar terverifikasi.</p>
-                </div>
-                <div class="demo-step-card step-coral">
-                    <div class="demo-step-label" style="color:var(--coral);">
-                        <span class="demo-step-num">3</span> Kirim E-Ticket
-                    </div>
-                    <h4>Konfirmasi & Kirim</h4>
-                    <p>Status booking berubah jadi "PAID". E-ticket otomatis dikirim ke email tamu.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ======= 07-investasi.html ======= -->
-<!-- ============================================
-     SECTION 07: INVESTASI (Pricing)
-     ============================================ -->
-<style>
-    .investasi-section {
-        padding: 100px 24px;
-        background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
-    }
-    .investasi-card {
-        max-width: 860px; margin: 0 auto;
-        background: var(--surface); border-radius: 24px;
-        border: 3px solid var(--accent); overflow: hidden;
-        box-shadow: var(--shadow-xl); position: relative;
-    }
-    .investasi-ribbon {
-        position: absolute; top: 24px; right: -40px;
-        background: linear-gradient(135deg, var(--coral), #C0503A);
-        color: white; padding: 8px 56px; transform: rotate(45deg);
-        font-weight: 700; font-size: 0.82rem;
-        box-shadow: 0 4px 12px rgba(212,101,74,0.4);
-    }
-    .investasi-header {
-        padding: 40px 40px 0; text-align: center;
-    }
-    .investasi-header .section-tag { margin-bottom: 16px; }
-    .investasi-header h3 {
-        font-size: 1.6rem; margin-bottom: 8px;
-    }
-
-    .investasi-price-block {
-        text-align: center; padding: 24px 40px 32px;
-    }
-    .investasi-old-price {
-        font-size: 1.2rem; color: var(--text-muted);
-        text-decoration: line-through; margin-bottom: 8px;
-    }
-    .investasi-old-price .save-badge {
-        text-decoration: none; display: inline-block;
-        background: var(--coral-light); color: var(--coral);
-        padding: 4px 12px; border-radius: 12px; font-size: 0.78rem;
-        font-weight: 600; margin-left: 8px;
-    }
-    .investasi-main-price {
-        font-family: 'Fraunces', serif; font-size: 3.6rem;
-        font-weight: 800; color: var(--accent-dark); line-height: 1;
-    }
-    .investasi-main-price span { font-size: 1.8rem; }
-    .investasi-price-note {
-        font-size: 0.92rem; color: var(--text-muted); margin-top: 10px;
-    }
-
-    /* Why 3 months */
-    .investasi-why {
-        margin: 0 40px 32px; padding: 24px;
-        background: linear-gradient(135deg, rgba(45,122,111,0.06), rgba(45,122,111,0.02));
-        border-radius: var(--radius-sm); border-left: 4px solid var(--accent);
-    }
-    .investasi-why h4 {
-        font-size: 1.05rem; margin-bottom: 8px;
-    }
-    .investasi-why p {
-        font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65;
-    }
-
-    /* Payment options */
-    .investasi-options {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-        padding: 0 40px 32px;
-    }
-    .option-card {
-        border: 2px solid var(--border); border-radius: var(--radius);
-        padding: 24px; text-align: center; transition: all 0.3s;
-    }
-    .option-card.recommended {
-        border-color: var(--accent); position: relative;
-        background: linear-gradient(135deg, rgba(45,122,111,0.06), rgba(45,122,111,0.02));
-    }
-    .option-card.recommended .option-badge {
-        position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-        background: var(--accent); color: white; padding: 4px 16px;
-        border-radius: 20px; font-size: 0.72rem; font-weight: 700;
-    }
-    .option-label {
-        font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; color: var(--text-muted);
-        padding: 4px 12px; border-radius: 12px; background: var(--bg-alt);
-        display: inline-block; margin-bottom: 14px;
-    }
-    .option-card.recommended .option-label {
-        background: rgba(45,122,111,0.15); color: var(--accent);
-    }
-    .option-price {
-        font-family: 'Fraunces', serif; font-size: 1.8rem;
-        font-weight: 700; margin-bottom: 6px;
-    }
-    .option-card.recommended .option-price { color: var(--accent-dark); }
-    .option-price span { font-size: 0.9rem; color: var(--text-muted); }
-    .option-desc { font-size: 0.85rem; color: var(--text-secondary); }
-    .option-phases {
-        margin-top: 14px; padding-top: 14px;
-        border-top: 1px dashed rgba(45,122,111,0.3);
-        text-align: left;
-    }
-    .option-phase-item {
-        display: flex; align-items: center; gap: 8px;
-        font-size: 0.82rem; color: var(--accent-dark); margin-bottom: 6px;
-    }
-    .option-phase-item svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
-
-    /* Value list */
-    .investasi-values {
-        margin: 0 40px 32px; padding: 20px;
-        background: var(--bg); border-radius: var(--radius-sm);
-    }
-    .investasi-values-label {
-        font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
-    }
-    .investasi-values-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    }
-    .value-item {
-        display: flex; align-items: center; gap: 8px; font-size: 0.88rem;
-    }
-    .value-item svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
-
-    .investasi-values-total {
-        margin-top: 16px; padding-top: 16px;
-        border-top: 1px solid var(--border-light);
-        text-align: right;
-    }
-    .investasi-values-total .strike { text-decoration: line-through; color: var(--text-muted); }
-    .investasi-values-total .actual { color: var(--accent-dark); font-weight: 700; font-size: 1.05rem; margin-left: 8px; }
-
-    /* CTA */
-    .investasi-cta {
-        padding: 0 40px 40px; text-align: center;
-    }
-    .investasi-guarantee {
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);
-    }
-    .investasi-guarantee svg { width: 16px; height: 16px; color: var(--accent); }
-
-    @media (max-width: 768px) {
-        .investasi-options { grid-template-columns: 1fr; }
-        .investasi-values-grid { grid-template-columns: 1fr; }
-        .investasi-card { margin: 0 -8px; }
-        .investasi-header, .investasi-price-block, .investasi-cta,
-        .investasi-why, .investasi-options, .investasi-values { 
-            padding-left: 24px; padding-right: 24px; margin-left: 0; margin-right: 0;
-        }
-    }
-</style>
-
-<section class="investasi-section" id="investasi">
-    <div class="container center">
-        <span class="section-tag gold reveal">Investasi</span>
-        <h2 class="section-title reveal reveal-delay-1">Berapa Biayanya?</h2>
-        <p class="section-subtitle center reveal reveal-delay-2">
-            Transparan, tidak ada biaya tersembunyi. Satu harga untuk semua modul.
-        </p>
-    </div>
-
-    <div class="investasi-card reveal reveal-delay-2">
-        <div class="investasi-ribbon">HEMAT 67%</div>
-
-        <div class="investasi-header">
-            <span class="section-tag accent">Penawaran Khusus</span>
-            <h3>Paket Lengkap — 6 Modul</h3>
-        </div>
-
-        <div class="investasi-price-block">
-            <div class="investasi-old-price">
-                Rp 150.000.000
-                <span class="save-badge">-Rp 100jt</span>
-            </div>
-            <div class="investasi-main-price">
-                Rp 50<span>juta</span>
-            </div>
-            <div class="investasi-price-note">
-                Sekali bayar · Pengerjaan 3 bulan · Semua modul termasuk
-            </div>
-        </div>
-
-        <!-- Why 3 months -->
-        <div class="investasi-why">
-            <h4>Kenapa butuh 3 bulan?</h4>
-            <p>
-                Sistem reservasi pulau itu rumit — ada kamar, paket, harga yang berubah-ubah, jadwal kapal, manifest penumpang, dan pembayaran yang semuanya saling terhubung. 
-                <strong>Bulan pertama kami fokus menyusun fondasi data yang benar</strong>, supaya AI dan otomasi bisa berjalan akurat. Ini yang bikin sistem tahan lama.
-            </p>
-        </div>
-
-        <!-- Payment options -->
-        <div class="investasi-options">
-            <div class="option-card">
-                <div class="option-label">Bayar Lunas</div>
-                <div class="option-price">Rp 50<span>juta</span></div>
-                <div class="option-desc">Satu kali bayar di awal</div>
-            </div>
-            <div class="option-card recommended">
-                <div class="option-badge">DIREKOMENDASIKAN</div>
-                <div class="option-label">Cicilan s/d 6×</div>
-                <div class="option-price">Rp 8.5<span>juta/bulan</span></div>
-                <div class="option-desc">Termin maksimal 6 bulan</div>
-                <div class="option-phases">
-                    <div class="option-phase-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                        Bulan 1–2 → Riset & Bangun Database
-                    </div>
-                    <div class="option-phase-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                        Bulan 3–4 → AI, Otomasi & Dashboard Charter
-                    </div>
-                    <div class="option-phase-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                        Bulan 5–6 → Uji Coba & Go-Live
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Biaya Bulanan Setelah Go-Live -->
-        <div style="margin:0 40px 32px; padding:24px; background:linear-gradient(135deg, rgba(200,164,92,0.08), rgba(200,164,92,0.02)); border-radius:var(--radius-sm); border-left:4px solid var(--gold);">
-            <h4 style="font-size:1.05rem; margin-bottom:8px; color:var(--gold);">Biaya Bulanan Setelah Go-Live</h4>
-            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:8px;">
-                <span style="font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; color:var(--text);">Rp 4,5jt</span>
-                <span style="font-size:0.9rem; color:var(--text-muted);">/bulan</span>
-            </div>
-            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin-bottom:8px;">
-                Termasuk: Maintenance sistem, technical support, dan biaya server.
-            </p>
-            <p style="font-size:0.82rem; color:var(--gold); font-weight:600;">
-                Langganan Cekat AI opsional — bisa pakai WhatsApp biasa untuk hemat budget.
-            </p>
-        </div>
-
-        <!-- Value breakdown -->
-        <div class="investasi-values">
-            <div class="investasi-values-label">Nilai yang Anda Dapat:</div>
-            <div class="investasi-values-grid">
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    AI Chatbot WhatsApp (~Rp 12jt)
-                </div>
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    Database & Harga (~Rp 10jt)
-                </div>
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    Otomasi Proses (~Rp 10jt)
-                </div>
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    Verifikasi Bayar (~Rp 6jt)
-                </div>
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    Dashboard Admin (~Rp 8jt)
-                </div>
-                <div class="value-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                    Dashboard Charter & Laporan Operasional (~Rp 8jt)
-                </div>
-            </div>
-            <div class="investasi-values-total">
-                <span class="strike">Total: Rp 150jt</span>
-                <span class="actual">→ Anda bayar: Rp 50jt</span>
-            </div>
-        </div>
-
-        <!-- CTA -->
-        <div class="investasi-cta">
-            <button class="btn-primary" onclick="document.getElementById('cta-section').scrollIntoView({behavior:'smooth'})" style="padding:18px 40px; font-size:1.05rem;">
-                Mulai Diskusi Project
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <button type="submit" class="lock-btn" id="lock-submit">
+                <span id="btn-text">Buka Dokumen</span>
+                <div class="lock-spinner" id="lock-spinner"></div>
             </button>
-            <div class="investasi-guarantee">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Garansi: Uang kembali jika tidak sesuai scope yang disepakati
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ======= 08-roi.html ======= -->
-<!-- SECTION 08: ROI -->
-<style>
-.roi-section{padding:100px 24px;background:var(--bg-dark);color:white}
-.roi-section .section-title{color:white}
-.roi-section .section-subtitle{color:rgba(255,255,255,.6)}
-.roi-tag{display:inline-block;padding:6px 16px;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;background:rgba(45,122,111,.2);color:#5CC8B8}
-.roi-monthly{max-width:480px;margin:0 auto 48px;text-align:center;background:linear-gradient(135deg,rgba(45,122,111,.2),rgba(45,122,111,.05));border:2px solid rgba(45,122,111,.4);border-radius:20px;padding:28px 40px}
-.roi-monthly-val{font-family:'Fraunces',serif;font-size:3rem;font-weight:800;line-height:1}
-.roi-monthly-val span{font-size:1.2rem;color:rgba(255,255,255,.5)}
-.roi-compare{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.roi-box{border-radius:16px;padding:28px}
-.roi-box.old{background:rgba(212,101,74,.08);border:1px solid rgba(212,101,74,.2)}
-.roi-box.new{background:rgba(45,122,111,.08);border:1px solid rgba(45,122,111,.3)}
-.roi-box-label{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
-.roi-box.old .roi-box-label{color:#D4654A}
-.roi-box.new .roi-box-label{color:#5CC8B8}
-.roi-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.9rem}
-.roi-row:last-child{border-bottom:none}
-.roi-row .l{color:rgba(255,255,255,.7)}.roi-row .v{font-weight:700}
-.roi-box.old .v{color:#D4654A}.roi-box.new .v{color:#5CC8B8}
-.roi-total{margin-top:14px;padding:14px;border-radius:10px;display:flex;justify-content:space-between;font-weight:700}
-.roi-box.old .roi-total{background:rgba(212,101,74,.15)}
-.roi-box.new .roi-total{background:rgba(45,122,111,.15)}
-.roi-save{max-width:1140px;margin:32px auto 0;background:linear-gradient(135deg,rgba(200,164,92,.15),rgba(200,164,92,.05));border:1px solid rgba(200,164,92,.3);border-radius:16px;padding:24px;text-align:center;font-size:1.1rem;color:#C8A45C}
-.roi-save strong{color:white}
-.roi-final{max-width:1140px;margin:40px auto 0;background:linear-gradient(135deg,#1E5C54,#2D7A6F);border-radius:16px;padding:32px;text-align:center}
-.roi-final-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:16px}
-.roi-fi{text-align:center}.roi-fi .n{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700}.roi-fi .s{font-size:.72rem;opacity:.6}
-.roi-fo{font-size:1.3rem;opacity:.4}
-.roi-fr{background:white;color:#1E5C54;padding:14px 24px;border-radius:12px}.roi-fr .n{font-size:2rem}
-@media(max-width:768px){.roi-compare{grid-template-columns:1fr}.roi-final-row{flex-direction:column}}
-</style>
-
-<section class="roi-section" id="roi">
-<div class="container center">
-    <span class="roi-tag reveal">Hitung-hitungan</span>
-    <h2 class="section-title reveal reveal-delay-1">Bukan Pengeluaran,<br>Ini Investasi</h2>
-    <p class="section-subtitle center reveal reveal-delay-2">Bandingkan biaya lama vs biaya setelah pakai sistem.</p>
-</div>
-
-<div class="roi-monthly reveal reveal-delay-2">
-    <div style="font-size:.85rem;color:#5CC8B8;margin-bottom:8px">Biaya Operasional Bulanan Setelah Go-Live</div>
-    <div class="roi-monthly-val">Rp 4,5<span>jt/bulan</span></div>
-    <div style="font-size:.88rem;color:#5CC8B8;margin-top:8px">Maintenance + Support + Server</div>
-</div>
-
-<div class="roi-compare container reveal reveal-delay-3">
-    <div class="roi-box old">
-        <div class="roi-box-label">❌ Cara Lama (Excel + 2 Admin)</div>
-        <div class="roi-row"><span class="l">2 Admin booking + WA</span><span class="v">Rp 10jt</span></div>
-        <div class="roi-row"><span class="l">Owner urus masalah operasional</span><span class="v">Rp 5jt</span></div>
-        <div class="roi-row"><span class="l">Kerugian salah harga & double booking</span><span class="v">Rp 8jt</span></div>
-        <div class="roi-total"><span>Total/bulan</span><span>Rp 23jt</span></div>
-    </div>
-    <div class="roi-box new">
-        <div class="roi-box-label">✅ Dengan Sistem Baru</div>
-        <div class="roi-row"><span class="l">1 Admin supervise saja</span><span class="v">Rp 5jt</span></div>
-        <div class="roi-row"><span class="l">Maintenance + Support + Server</span><span class="v">Rp 4.5jt</span></div>
-        <div class="roi-row"><span class="l">Cekat AI (opsional)</span><span class="v">Opsional</span></div>
-        <div class="roi-row"><span class="l">Kerugian error & double booking</span><span class="v">Rp 0</span></div>
-        <div class="roi-total"><span>Total/bulan</span><span>~Rp 9.5jt</span></div>
-    </div>
-</div>
-
-<div class="roi-save container reveal reveal-delay-4">
-    💡 <strong>Hemat ~Rp 13.5jt/bulan</strong> = <strong>Rp 162jt/tahun</strong>
-</div>
-
-<div class="roi-final container reveal reveal-delay-5">
-    <div style="font-size:.85rem;opacity:.7">ROI TAHUN PERTAMA</div>
-    <div class="roi-final-row">
-        <div class="roi-fi"><div class="n">Rp 162jt</div><div class="s">Penghematan/tahun</div></div>
-        <div class="roi-fo">+</div>
-        <div class="roi-fi"><div class="n">Rp 150jt</div><div class="s">Revenue recovery</div></div>
-        <div class="roi-fo">=</div>
-        <div class="roi-fr"><div class="n">6x ROI</div><div class="s">Return on Investment</div></div>
-    </div>
-    <div style="margin-top:20px;font-size:.9rem;opacity:.85">Investasi Rp 50jt → Dampak Rp 312jt di tahun pertama</div>
-</div>
-</section>
-
-<!-- ======= 09-timeline.html ======= -->
-<!-- SECTION 09: TIMELINE -->
-<style>
-.timeline-section{padding:100px 24px;background:var(--surface)}
-.tl-track{max-width:900px;margin:0 auto;position:relative}
-.tl-track::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:3px;background:var(--border-light);border-radius:2px}
-.tl-phase{position:relative;padding-left:72px;margin-bottom:48px}
-.tl-phase:last-child{margin-bottom:0}
-.tl-dot{position:absolute;left:16px;top:4px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:white;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:2}
-.tl-dot.p1{background:var(--accent)}.tl-dot.p2{background:var(--gold)}.tl-dot.p3{background:var(--coral)}.tl-dot.p4{background:var(--navy)}
-.tl-phase-label{font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
-.tl-phase-label.c1{color:var(--accent)}.tl-phase-label.c2{color:var(--gold)}.tl-phase-label.c3{color:var(--coral)}.tl-phase-label.c4{color:var(--navy)}
-.tl-phase h3{font-size:1.3rem;margin-bottom:8px}
-.tl-phase>p{font-size:.92rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6}
-.tl-tasks{display:flex;flex-direction:column;gap:8px}
-.tl-task{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--bg);border-radius:10px;font-size:.88rem;color:var(--text-secondary)}
-.tl-task-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.tl-task-icon svg{width:12px;height:12px}
-.tl-task-icon.c1{background:var(--accent-light)}.tl-task-icon.c1 svg{stroke:var(--accent)}
-.tl-task-icon.c2{background:var(--gold-light)}.tl-task-icon.c2 svg{stroke:var(--gold)}
-.tl-task-icon.c3{background:var(--coral-light)}.tl-task-icon.c3 svg{stroke:var(--coral)}
-.tl-task-icon.c4{background:var(--navy-light)}.tl-task-icon.c4 svg{stroke:var(--navy)}
-.tl-week-badge{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.72rem;font-weight:700;margin-bottom:10px}
-.tl-week-badge.c1{background:var(--accent-light);color:var(--accent)}
-.tl-week-badge.c2{background:var(--gold-light);color:var(--gold)}
-.tl-week-badge.c3{background:var(--coral-light);color:var(--coral)}
-.tl-week-badge.c4{background:var(--navy-light);color:var(--navy)}
-.tl-payment{margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:.78rem;font-weight:600}
-.tl-payment.c1{background:rgba(45,122,111,.1);color:var(--accent)}
-.tl-payment.c2{background:rgba(200,164,92,.1);color:var(--gold)}
-.tl-payment.c3{background:rgba(212,101,74,.1);color:var(--coral)}
-.tl-payment svg{width:14px;height:14px}
-@media(max-width:768px){.tl-phase{padding-left:56px}.tl-track::before{left:20px}.tl-dot{left:8px}}
-</style>
-
-<section class="timeline-section" id="timeline">
-<div class="container center">
-    <span class="section-tag navy reveal">Jadwal Pengerjaan</span>
-    <h2 class="section-title reveal reveal-delay-1">90 Hari Menuju<br>Reservasi Otomatis</h2>
-    <p class="section-subtitle center reveal reveal-delay-2">Setiap bulan punya tujuan jelas. Anda bisa pantau progress lewat update mingguan.</p>
-</div>
-
-<div class="tl-track container">
-    <div class="tl-phase reveal reveal-delay-1">
-        <div class="tl-dot p1">1</div>
-        <span class="tl-week-badge c1">Minggu 1–4</span>
-        <div class="tl-phase-label c1">Bulan Pertama</div>
-        <h3>Riset & Bangun Pondasi Data</h3>
-        <p>Kami pelajari cara kerja reservasi Sepa Island sekarang, lalu bangun database yang jadi jantung seluruh sistem.</p>
-        <div class="tl-tasks">
-            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Wawancara tim: pelajari proses booking saat ini</div>
-            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Input semua data kamar, harga, aturan ke database</div>
-            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Buat logika hitung harga otomatis (weekday, weekend, high season)</div>
-            <div class="tl-task"><div class="tl-task-icon c1"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Desain alur proses booking dari awal sampai akhir</div>
-        </div>
-        <div class="tl-payment c1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            Pembayaran 1: Rp 17jt (cicilan) atau Rp 50jt (lunas)
-        </div>
-    </div>
-
-    <div class="tl-phase reveal reveal-delay-2">
-        <div class="tl-dot p2">2</div>
-        <span class="tl-week-badge c2">Minggu 5–8</span>
-        <div class="tl-phase-label c2">Bulan Kedua</div>
-        <h3>Bangun AI & Otomasi</h3>
-        <p>Setelah pondasi siap, kami "ajarkan" AI semua pengetahuan tentang Sepa Island dan hubungkan otomasi.</p>
-        <div class="tl-tasks">
-            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Latih AI chatbot: harga, kebijakan, FAQ</div>
-            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Hubungkan chatbot ke WhatsApp Business</div>
-            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Buat otomasi: invoice, pengingat bayar, e-ticket</div>
-            <div class="tl-task"><div class="tl-task-icon c2"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Bangun dashboard admin</div>
-        </div>
-        <div class="tl-payment c2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            Pembayaran 2: Rp 17jt
-        </div>
-    </div>
-
-    <div class="tl-phase reveal reveal-delay-3">
-        <div class="tl-dot p3">3</div>
-        <span class="tl-week-badge c3">Minggu 9–10</span>
-        <div class="tl-phase-label c3">Bulan Ketiga (Awal)</div>
-        <h3>Uji Coba & Perbaikan</h3>
-        <p>Sistem dijalankan paralel dengan proses lama. Kami perbaiki semua yang kurang selama 2 minggu.</p>
-        <div class="tl-tasks">
-            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Test semua skenario booking (normal, reschedule, cancel)</div>
-            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Test verifikasi pembayaran</div>
-            <div class="tl-task"><div class="tl-task-icon c3"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Perbaiki AI response yang belum sempurna</div>
-        </div>
-    </div>
-
-    <div class="tl-phase reveal reveal-delay-4">
-        <div class="tl-dot p4">4</div>
-        <span class="tl-week-badge c4">Minggu 11–12</span>
-        <div class="tl-phase-label c4">Bulan Ketiga (Akhir)</div>
-        <h3>Go-Live & Pelatihan</h3>
-        <p>Sistem resmi jalan! Tim Anda dilatih, dokumentasi diserahkan, dan kami dampingi di bulan pertama.</p>
-        <div class="tl-tasks">
-            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Pelatihan tim (2 sesi)</div>
-            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Serahkan dokumentasi & video tutorial</div>
-            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Sistem live 100% — terima booking nyata</div>
-            <div class="tl-task"><div class="tl-task-icon c4"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Mulai support 3 bulan gratis</div>
-        </div>
-        <div class="tl-payment c3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            Pembayaran 3: Rp 16jt
+        </form>
+        <div class="lock-error-msg" id="lock-error"></div>
+        <div class="lock-footer">
+            <p>Proposal eksklusif untuk <span>NAMA Marine</span><br>oleh Flexeet Technology</p>
         </div>
     </div>
 </div>
-</section>
 
-<!-- ======= 10-garansi.html ======= -->
-<!-- SECTION 10: GARANSI -->
-<style>
-.garansi-section{padding:100px 24px;background:var(--bg)}
-.garansi-grid{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.garansi-card{border-radius:16px;padding:32px;border:1px solid var(--border-light)}
-.garansi-card.included{background:var(--surface)}
-.garansi-card.not-included{background:var(--bg)}
-.garansi-card-label{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
-.garansi-card.included .garansi-card-label{color:var(--accent)}
-.garansi-card.not-included .garansi-card-label{color:var(--text-muted)}
-.garansi-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.9rem;color:var(--text-secondary)}
-.garansi-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.garansi-icon svg{width:12px;height:12px}
-.garansi-icon.yes{background:var(--accent-light)}.garansi-icon.yes svg{stroke:var(--accent)}
-.garansi-icon.no{background:#FEE2E2}.garansi-icon.no svg{stroke:#EF4444}
-.garansi-highlight{max-width:1140px;margin:40px auto 0;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:16px;padding:32px 40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.garansi-highlight-icon{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.garansi-highlight-icon svg{width:28px;height:28px;stroke:white}
-.garansi-highlight-text{color:white;flex:1}
-.garansi-highlight-text h3{color:white;font-size:1.2rem;margin-bottom:6px}
-.garansi-highlight-text p{font-size:.92rem;opacity:.85;line-height:1.55}
-.support-model{max-width:1140px;margin:40px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.support-card{background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border-light);text-align:center}
-.support-card h4{font-size:1rem;margin-bottom:6px}
-.support-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.55}
-.support-tag{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.72rem;font-weight:700;margin-bottom:12px}
-.support-tag.free{background:var(--accent-light);color:var(--accent)}
-.support-tag.opt{background:var(--gold-light);color:var(--gold)}
-@media(max-width:768px){.garansi-grid,.support-model{grid-template-columns:1fr}.garansi-highlight{flex-direction:column;text-align:center}}
-</style>
-<section class="garansi-section" id="garansi">
-<div class="container center">
-    <span class="section-tag accent reveal">Transparan & Jelas</span>
-    <h2 class="section-title reveal reveal-delay-1">Apa yang Termasuk<br>& Tidak Termasuk</h2>
-    <p class="section-subtitle center reveal reveal-delay-2">Tidak ada biaya tersembunyi. Semua ditulis terang-terangan.</p>
-</div>
-<div class="garansi-grid container">
-    <div class="garansi-card included reveal reveal-delay-1">
-        <div class="garansi-card-label">Termasuk dalam paket</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Desain & arsitektur seluruh sistem</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Database lengkap (kamar, harga, booking, tamu)</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>AI chatbot WhatsApp + pelatihan</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Semua otomasi (invoice, pengingat, e-ticket)</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Dashboard admin (HP & komputer)</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>2 sesi pelatihan + video + dokumentasi</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>3 bulan support gratis (perbaikan bug)</div>
-        <div class="garansi-item"><div class="garansi-icon yes"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Update progress mingguan selama pengerjaan</div>
-    </div>
-    <div class="garansi-card not-included reveal reveal-delay-2">
-        <div class="garansi-card-label">Tidak termasuk (transparan)</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Migrasi data lama (bisa tambahan)</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Laporan custom di luar dashboard standar</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Support 24 jam (jam kerja saja)</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Biaya maintenance + support + server bulanan (Rp 4,5jt/bulan)</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Integrasi sistem luar scope</div>
-        <div class="garansi-item"><div class="garansi-icon no"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></div>Fitur tambahan (bisa nego terpisah)</div>
-    </div>
-</div>
-<div class="garansi-highlight container reveal reveal-delay-3">
-    <div class="garansi-highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-    <div class="garansi-highlight-text">
-        <h3>Garansi Uang Kembali</h3>
-        <p>Jika sistem tidak sesuai scope yang disepakati di awal kontrak, kami kembalikan uang Anda. Kami berani karena kami yakin dengan kualitas pekerjaan kami.</p>
-    </div>
-</div>
-<div class="support-model container">
-    <div class="support-card reveal reveal-delay-1">
-        <span class="support-tag free">GRATIS</span>
-        <h4>Bulan 1–3 Setelah Go-Live</h4>
-        <p>Support harian (bulan 1), mingguan (bulan 2-3). Perbaikan bug gratis.</p>
-    </div>
-    <div class="support-card reveal reveal-delay-2">
-        <span class="support-tag opt">BULANAN</span>
-        <h4>Maintenance & Server</h4>
-        <p>Rp 4,5jt/bulan. Maintenance sistem, technical support, dan biaya server.</p>
-    </div>
-    <div class="support-card reveal reveal-delay-3">
-        <span class="support-tag opt">OPSIONAL</span>
-        <h4>Langganan Cekat AI</h4>
-        <p>Opsional — bisa pakai Cekat AI atau cukup WhatsApp biasa untuk hemat budget.</p>
-    </div>
-</div>
-</section>
+<!-- ============================================
+     MAIN CONTENT (loaded after password verified)
+     ============================================ -->
+<div id="main-content"></div>
 
-<!-- ======= 11-cta.html ======= -->
-<!-- SECTION 11: CTA -->
-<style>
-.cta-section{padding:80px 24px;background:linear-gradient(135deg,var(--bg-dark),#1E2530)}
-.cta-inner{max-width:720px;margin:0 auto;text-align:center}
-.cta-inner h2{color:white;font-size:clamp(1.8rem,3.5vw,2.6rem);margin-bottom:16px}
-.cta-inner p{color:rgba(255,255,255,.65);font-size:1.05rem;margin-bottom:36px;line-height:1.7}
-.cta-buttons{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:32px}
-.cta-btn-wa{background:#25D366;color:white;border:none;padding:18px 36px;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif;box-shadow:0 8px 24px rgba(37,211,102,.3);transition:all .3s}
-.cta-btn-wa:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,.4)}
-.cta-btn-wa svg{width:20px;height:20px}
-.cta-btn-email{background:none;border:2px solid rgba(255,255,255,.3);color:white;padding:16px 32px;border-radius:50px;font-weight:600;font-size:.95rem;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif;transition:all .2s}
-.cta-btn-email:hover{border-color:rgba(255,255,255,.6)}
-.cta-btn-email svg{width:18px;height:18px}
-.cta-trust{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}
-.cta-trust-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:rgba(255,255,255,.5)}
-.cta-trust-item svg{width:14px;height:14px;stroke:var(--accent)}
-</style>
-<section class="cta-section" id="cta-section">
-<div class="cta-inner reveal">
-    <h2>Siap Mulai?</h2>
-    <p>Langkah pertama cukup satu pesan. Kami akan diskusikan kebutuhan spesifik Sepa Island dan sesuaikan sistemnya untuk Anda.</p>
-    <div class="cta-buttons">
-        <a href="https://wa.me/6281234567890?text=Halo%20Flexeet,%20saya%20tertarik%20dengan%20sistem%20reservasi%20untuk%20Sepa%20Island" class="cta-btn-wa" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Chat via WhatsApp
-        </a>
-        <a href="mailto:hello@flexeet.com?subject=Proposal%20NAMA%20Marine%20-%20Sepa%20Island" class="cta-btn-email">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
-            Kirim Email
-        </a>
-    </div>
-    <div class="cta-trust">
-        <div class="cta-trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Garansi uang kembali
-        </div>
-        <div class="cta-trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            Tidak ada lock-in kontrak
-        </div>
-        <div class="cta-trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            Bisa cicil 3 bulan
-        </div>
-    </div>
-</div>
-</section>
-
-<!-- ======= 12-footer.html ======= -->
-<!-- SECTION 12: FOOTER -->
-<style>
-.site-footer{padding:48px 24px 32px;background:var(--bg-darker);color:rgba(255,255,255,.5)}
-.footer-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.footer-brand{display:flex;align-items:center;gap:10px}
-.footer-brand-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.85rem}
-.footer-brand-text{font-family:'Fraunces',serif;font-weight:700;font-size:.95rem;color:rgba(255,255,255,.8)}
-.footer-brand-text span{color:var(--accent)}
-.footer-info{font-size:.82rem;text-align:right}
-.footer-info a{color:var(--accent);transition:opacity .2s}
-.footer-info a:hover{opacity:.7}
-.footer-divider{width:100%;height:1px;background:rgba(255,255,255,.06);margin:24px 0 16px}
-.footer-bottom{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.78rem}
-.footer-bottom-tech{display:flex;align-items:center;gap:12px}
-.footer-tech-badge{padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.06);font-size:.72rem;color:rgba(255,255,255,.4)}
-@media(max-width:768px){.footer-inner,.footer-bottom{flex-direction:column;text-align:center}.footer-info{text-align:center}}
-</style>
-<footer class="site-footer">
-<div class="footer-inner container">
-    <div class="footer-brand">
-        <div class="footer-brand-icon">N</div>
-        <div class="footer-brand-text">NAMA <span>Marine</span></div>
-    </div>
-    <div class="footer-info">
-        Proposal dibuat oleh <a href="#">Flexeet Technology</a><br>
-        Dokumen ini bersifat rahasia dan hanya untuk NAMA Marine.
-    </div>
-</div>
-<div class="footer-divider container"></div>
-<div class="footer-bottom container">
-    <span>&copy; 2026 Flexeet Technology. All rights reserved.</span>
-    <div class="footer-bottom-tech">
-        <span class="footer-tech-badge">MySQL</span>
-        <span class="footer-tech-badge">n8n</span>
-        <span class="footer-tech-badge">AI / LLM</span>
-        <span class="footer-tech-badge">WhatsApp API</span>
-    </div>
-</div>
-</footer>
-
-<!-- SCROLL REVEAL SCRIPT -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Scroll Reveal
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+(function(){
+    // Encrypted verification token (AES-256-GCM)
+    // Password TIDAK tersimpan di source code
+    var _t = 'l+CsE7ZtZC0dKTmGPTYEKaaClXAYwSpcz257YSVHE8TS2rnKvNQ2OQRzxUqTQchixa/QNxpX+mivjmAoEYMdsD8TpG2RBOQ4Dn8YItvw+K4D';
 
-    // Header scroll
-    const header = document.getElementById('main-header');
-    if (header) {
-        window.addEventListener('scroll', () => {
-            header.classList.toggle('scrolled', window.scrollY > 60);
-        });
+    // Section files to load
+    var _s = [
+        '01-header.html','02-hero.html','03-masalah.html','04-solusi.html',
+        '05-modul.html','06-cara-kerja.html','07-investasi.html','08-roi.html',
+        '09-timeline.html','10-garansi.html','11-cta.html','12-footer.html'
+    ];
+
+    // Base64 to ArrayBuffer
+    function b64ToAb(b64) {
+        var bin = atob(b64), len = bin.length, ab = new Uint8Array(len);
+        for (var i = 0; i < len; i++) ab[i] = bin.charCodeAt(i);
+        return ab.buffer;
     }
 
-    // Mobile nav
-    const toggle = document.getElementById('mobile-toggle');
-    const menu = document.getElementById('mobile-menu');
-    if (toggle && menu) {
-        toggle.addEventListener('click', () => {
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
-        menu.querySelectorAll('a').forEach(a => {
-            a.addEventListener('click', () => { menu.style.display = 'none'; });
-        });
+    // Verify password using AES-256-GCM
+    async function verifyPassword(pw) {
+        try {
+            var data = new Uint8Array(b64ToAb(_t));
+            var salt = data.slice(0, 16);
+            var iv = data.slice(16, 28);
+            var authTag = data.slice(28, 44);
+            var ciphertext = data.slice(44);
+
+            // Combine ciphertext + authTag for Web Crypto (it expects them together)
+            var combined = new Uint8Array(ciphertext.length + authTag.length);
+            combined.set(ciphertext);
+            combined.set(authTag, ciphertext.length);
+
+            // Import password as key material
+            var keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                new TextEncoder().encode(pw),
+                'PBKDF2',
+                false,
+                ['deriveKey']
+            );
+
+            // Derive AES key
+            var key = await crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['decrypt']
+            );
+
+            // Decrypt - if wrong password, this will throw
+            await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                combined
+            );
+
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
-    // Counter animation
-    const counters = document.querySelectorAll('[data-count]');
-    const cObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !entry.target.dataset.counted) {
-                entry.target.dataset.counted = 'true';
-                const target = parseInt(entry.target.dataset.count);
-                const suffix = entry.target.dataset.suffix || '';
-                const prefix = entry.target.dataset.prefix || '';
-                let current = 0;
-                const step = target / 40;
-                const timer = setInterval(() => {
-                    current += step;
-                    if (current >= target) { current = target; clearInterval(timer); }
-                    entry.target.textContent = prefix + Math.floor(current).toLocaleString('id-ID') + suffix;
-                }, 30);
+    // Load all sections
+    async function loadSections() {
+        var container = document.getElementById('main-content');
+        for (var i = 0; i < _s.length; i++) {
+            try {
+                var resp = await fetch(_s[i]);
+                if (resp.ok) {
+                    var html = await resp.text();
+                    var div = document.createElement('div');
+                    div.innerHTML = html;
+                    // Execute any <script> tags in loaded HTML
+                    var scripts = div.querySelectorAll('script');
+                    container.appendChild(div);
+                    scripts.forEach(function(oldScript) {
+                        var newScript = document.createElement('script');
+                        if (oldScript.src) {
+                            newScript.src = oldScript.src;
+                        } else {
+                            newScript.textContent = oldScript.textContent;
+                        }
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+                }
+            } catch (e) {
+                console.log('Failed to load: ' + _s[i]);
             }
+        }
+    }
+
+    // Initialize interactions after sections loaded
+    function initAll() {
+        // Scroll reveal
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+        // Accordions
+        document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var content = btn.nextElementSibling;
+                var icon = btn.querySelector('.accordion-icon');
+                var isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                document.querySelectorAll('.accordion-content').forEach(function(c) {
+                    c.style.maxHeight = '0px'; c.style.opacity = '0';
+                });
+                document.querySelectorAll('.accordion-icon').forEach(function(i) {
+                    i.style.transform = 'rotate(0deg)';
+                });
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    content.style.opacity = '1';
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                }
+            });
         });
-    }, { threshold: 0.3 });
-    counters.forEach(c => cObserver.observe(c));
-});
+
+        // Mobile nav
+        var toggle = document.getElementById('mobile-toggle');
+        var menu = document.getElementById('mobile-menu');
+        if (toggle && menu) {
+            toggle.addEventListener('click', function() {
+                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            });
+            menu.querySelectorAll('a').forEach(function(a) {
+                a.addEventListener('click', function() { menu.style.display = 'none'; });
+            });
+        }
+
+        // Header scroll
+        var header = document.getElementById('main-header');
+        if (header) {
+            window.addEventListener('scroll', function() {
+                header.classList.toggle('scrolled', window.scrollY > 60);
+            });
+        }
+
+        // Counter animation
+        var counters = document.querySelectorAll('[data-count]');
+        var cObs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !entry.target.dataset.counted) {
+                    entry.target.dataset.counted = 'true';
+                    var target = parseInt(entry.target.dataset.count);
+                    var suffix = entry.target.dataset.suffix || '';
+                    var prefix = entry.target.dataset.prefix || '';
+                    var current = 0, step = target / 40;
+                    var timer = setInterval(function() {
+                        current += step;
+                        if (current >= target) { current = target; clearInterval(timer); }
+                        entry.target.textContent = prefix + Math.floor(current).toLocaleString('id-ID') + suffix;
+                    }, 30);
+                }
+            });
+        }, { threshold: 0.3 });
+        counters.forEach(function(c) { cObs.observe(c); });
+    }
+
+    // Handle form submit
+    var form = document.getElementById('lock-form');
+    var input = document.getElementById('lock-password');
+    var errorEl = document.getElementById('lock-error');
+    var btnText = document.getElementById('btn-text');
+    var spinner = document.getElementById('lock-spinner');
+    var submitBtn = document.getElementById('lock-submit');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var pw = input.value.trim();
+        if (!pw) { input.focus(); return; }
+
+        // Show loading
+        btnText.style.display = 'none';
+        spinner.style.display = 'block';
+        submitBtn.disabled = true;
+        input.classList.remove('error');
+        errorEl.textContent = '';
+
+        var valid = await verifyPassword(pw);
+
+        if (valid) {
+            // Success - load content
+            document.getElementById('lock-screen').classList.add('unlocked');
+            var mainContent = document.getElementById('main-content');
+            mainContent.classList.add('visible');
+            await loadSections();
+            initAll();
+
+            // Store session (tab only, not persistent)
+            sessionStorage.setItem('_a', '1');
+        } else {
+            // Wrong password
+            btnText.style.display = 'inline';
+            spinner.style.display = 'none';
+            submitBtn.disabled = false;
+            input.classList.add('error');
+            errorEl.textContent = 'Password salah. Silakan coba lagi.';
+            input.select();
+            setTimeout(function() { input.classList.remove('error'); }, 600);
+        }
+    });
+
+    // Check session (same tab only)
+    if (sessionStorage.getItem('_a') === '1') {
+        document.getElementById('lock-screen').classList.add('unlocked');
+        var mainContent = document.getElementById('main-content');
+        mainContent.classList.add('visible');
+        loadSections().then(initAll);
+    }
+
+    // Toggle password visibility
+    window.togglePw = function() {
+        var inp = document.getElementById('lock-password');
+        var icon = document.getElementById('eye-icon');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+        } else {
+            inp.type = 'password';
+            icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+        }
+    };
+
+    // Anti-inspect measures
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+            (e.ctrlKey && e.key === 'u') ||
+            (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+})();
 </script>
+
 </body>
 </html>
